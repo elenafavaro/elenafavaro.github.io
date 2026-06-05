@@ -187,6 +187,55 @@
       fill: currentColor; stroke: none;
     }
 
+    /* ── Cursor instrument picker ── */
+    /* The mechanism: a class on <html> swaps the cursor for a PNG image.
+       No class = the visitor's normal system cursor. Images must be PNG
+       (Chrome ignores SVG cursors) and <=128px; "40 40" is the hotspot
+       for the 80x80 images. */
+    html.cur-rover,   html.cur-rover *   { cursor: url("images/rover.png")   40 40, auto !important; }
+    html.cur-orbiter, html.cur-orbiter * { cursor: url("images/orbiter.png") 40 40, auto !important; }
+
+    .cursor-instrument {
+      display: flex; align-items: center; gap: 0.7rem;
+      flex-wrap: wrap;
+      margin-top: var(--space-md);
+    }
+    .ci-label {
+      font-size: 0.7rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--clr-text-soft);
+    }
+    .ci-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .ci-chip {
+      position: relative;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.82rem; font-weight: 500;
+      padding: 0.3rem 0.7rem 0.3rem 0.5rem;
+      border: 1px solid var(--clr-border);
+      border-radius: 5px;
+      color: var(--clr-text-mid);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+      user-select: none;
+    }
+    .ci-chip:hover {
+      background: var(--clr-accent-soft);
+      border-color: var(--clr-accent);
+      color: var(--clr-accent);
+    }
+    .ci-chip img, .ci-chip .ci-ico {
+      width: 22px; height: 22px; display: block; flex-shrink: 0;
+    }
+    .ci-chip .ci-ico { color: var(--clr-text-soft); fill: currentColor; }
+    .ci-chip input { position: absolute; opacity: 0; pointer-events: none; }
+    .ci-chip:has(input:checked) {
+      background: var(--clr-accent-soft);
+      border-color: var(--clr-accent);
+      color: var(--clr-accent);
+    }
+    .ci-chip:has(input:checked) .ci-ico { color: var(--clr-accent); }
+    .ci-chip:has(input:focus-visible) { outline: 2px solid var(--clr-accent); outline-offset: 2px; }
+
     /* ── Sections ── */
     .section {
       margin-bottom: var(--space-xl);
@@ -358,6 +407,7 @@
     @media (max-width: 640px) {
       .profile { flex-direction: column; align-items: center; text-align: center; }
       .profile-links { justify-content: center; }
+      .cursor-instrument { justify-content: center; }
       .themes { grid-template-columns: 1fr; }
       .cv-item { grid-template-columns: 1fr; gap: 0.1rem; }
       footer { flex-direction: column; }
@@ -436,6 +486,29 @@
           Academic CV
         </a>     
       </div>
+
+      <!-- ── Cursor instrument picker ── -->
+      <div class="cursor-instrument" id="cursor-instrument">
+        <span class="ci-label">Cursor</span>
+        <div class="ci-options">
+          <label class="ci-chip">
+            <input type="radio" name="cursor" value="none" checked>
+            <svg class="ci-ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 1.4l11.2 5.5-4.8 1.2-2.6 4.8z"/></svg>
+            <span>None</span>
+          </label>
+          <label class="ci-chip">
+            <input type="radio" name="cursor" value="rover">
+            <img src="images/rover.png" alt="" aria-hidden="true">
+            <span>Rosalind Franklin</span>
+          </label>
+          <label class="ci-chip">
+            <input type="radio" name="cursor" value="orbiter">
+            <img src="images/orbiter.png" alt="" aria-hidden="true">
+            <span>Trace Gas Orbiter</span>
+          </label>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -623,6 +696,34 @@ Mountains of Northwestern Argentina.</a></div>
     btn.setAttribute('aria-expanded', !expanded);
     summary.classList.toggle('open');
   }
+</script>
+
+<!-- ── Cursor instrument logic ── -->
+<script>
+  (function () {
+    var root = document.documentElement;                 // the <html> element
+    var classes = { rover: "cur-rover", orbiter: "cur-orbiter" };
+    var radios = document.querySelectorAll('#cursor-instrument input[name="cursor"]');
+
+    function apply(value) {
+      root.classList.remove("cur-rover", "cur-orbiter");
+      if (classes[value]) root.classList.add(classes[value]);
+      try { localStorage.setItem("cursorInstrument", value); } catch (e) {}
+    }
+
+    radios.forEach(function (r) {
+      r.addEventListener("change", function () { apply(this.value); });
+    });
+
+    // restore the visitor's last choice (persists across pages)
+    try {
+      var saved = localStorage.getItem("cursorInstrument");
+      if (saved) {
+        var hit = document.querySelector('#cursor-instrument input[name="cursor"][value="' + saved + '"]');
+        if (hit) { hit.checked = true; apply(saved); }
+      }
+    } catch (e) {}
+  })();
 </script>
 
 </body>
