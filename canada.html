@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Canadian geographic features by location</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #EEF3F5; --surface: #FFFFFF; --ink: #16303A; --muted: #5B7480;
+  --rule: #C9D6DC; --accent: #2F6F8F; --accent-soft: #DCEAF1;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1E24; --surface: #16282F; --ink: #E3EDF1; --muted: #93AAB4;
+    --rule: #2A424B; --accent: #7FB7D3; --accent-soft: #1F3A46;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1E24; --surface: #16282F; --ink: #E3EDF1; --muted: #93AAB4;
+  --rule: #2A424B; --accent: #7FB7D3; --accent-soft: #1F3A46;
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 1rem/1.55 "Work Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: 56rem; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
+h1 {
+  font: 600 clamp(2rem, 5vw, 3rem)/1.1 "Newsreader", Georgia, "Times New Roman", serif;
+  margin: 0 0 .5rem; letter-spacing: -0.01em;
+}
+.intro { color: var(--muted); margin: 0 0 2rem; max-width: 40rem; }
+.controls { display: grid; gap: 1rem; margin-bottom: 1rem; }
+.filter { border: 0; margin: 0; padding: 0; min-width: 0; }
+legend { font-weight: 500; padding: 0; margin-bottom: .45rem; }
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.chip span {
+  display: inline-block; cursor: pointer; user-select: none;
+  padding: .35rem .75rem; border-radius: 999px; font-size: .9rem;
+  border: 1px solid var(--rule); background: var(--surface); color: var(--ink);
+}
+.chip input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.chip input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.status { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+.count { color: var(--muted); font-size: .9rem; }
+#clear {
+  font: inherit; font-size: .9rem; color: var(--accent); background: none;
+  border: 0; padding: 0; cursor: pointer; text-decoration: underline;
+}
+#clear:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; min-width: 36rem; }
+th, td { text-align: left; padding: .7rem 1rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 500; color: var(--muted); font-size: .9rem; background: var(--accent-soft); }
+tr:last-child td { border-bottom: none; }
+td.name { font: 600 1.1rem/1.3 "Newsreader", Georgia, serif; white-space: nowrap; }
+td.kind { color: var(--muted); white-space: nowrap; font-size: .92rem; }
+.tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+.tag {
+  font-size: .82rem; padding: .1rem .5rem; border-radius: 4px;
+  background: var(--accent-soft); color: var(--accent); white-space: nowrap;
+}
+.note { display: block; color: var(--muted); font-size: .88rem; margin-top: .3rem; }
+.aside {
+  margin-top: 2rem; padding: 1rem 1.25rem; border-left: 3px solid var(--accent);
+  background: var(--surface); border-radius: 0 8px 8px 0;
+}
+.aside h2 { font: 600 1.2rem/1.3 "Newsreader", Georgia, serif; margin: 0 0 .4rem; }
+.aside p { margin: 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Canadian geographic features by location</h1>
+  <p class="intro">Major rivers, lakes, other bodies of water, mountains and plains, and the provinces or territories they are in or border. Select any combination of types and regions; leave a group empty to include all.</p>
+
+  <div class="controls">
+    <fieldset class="filter">
+      <legend>Show</legend>
+      <div class="chips" id="kinds"></div>
+    </fieldset>
+    <fieldset class="filter">
+      <legend>In</legend>
+      <div class="chips" id="regions"></div>
+    </fieldset>
+    <div class="status">
+      <span class="count" id="count" aria-live="polite"></span>
+      <button type="button" id="clear">Clear filters</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Location</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <div class="aside">
+    <h2>Slave River and the Slave lakes</h2>
+    <p>The Slave River flows about 435 km from northeastern Alberta into Great Slave Lake, Northwest Territories. Great Slave Lake is drained by the Mackenzie River. Lesser Slave Lake, in central Alberta, is a separate lake drained by the Lesser Slave River.</p>
+  </div>
+</main>
+
+<script>
+// Rivers: ["Name", ["CODE", ...], "Optional note"]
+const rivers = [
+  ["Mackenzie", ["NT"], "Great Slave Lake to the Beaufort Sea"],
+  ["Yukon", ["YT"], "Rises in British Columbia, continues into Alaska"],
+  ["Liard", ["YT", "BC", "NT"]],
+  ["Slave", ["AB", "NT"], "Flows into Great Slave Lake"],
+  ["Peace", ["BC", "AB"]],
+  ["Athabasca", ["AB"]],
+  ["Fraser", ["BC"]],
+  ["Columbia", ["BC"], "Continues into the United States"],
+  ["Skeena", ["BC"]],
+  ["North Saskatchewan", ["AB", "SK"]],
+  ["South Saskatchewan", ["AB", "SK"]],
+  ["Churchill", ["SK", "MB"]],
+  ["Assiniboine", ["SK", "MB"]],
+  ["Red", ["MB"], "Rises in the United States"],
+  ["Nelson", ["MB"]],
+  ["Albany", ["ON"]],
+  ["Moose", ["ON"]],
+  ["Ottawa", ["ON", "QC"], "Forms much of the Ontario–Quebec border"],
+  ["St. Lawrence", ["ON", "QC"]],
+  ["Saguenay", ["QC"]],
+  ["La Grande", ["QC"]],
+  ["Koksoak", ["QC"], "Nunavik"],
+  ["Saint John", ["NB"], "Rises in Maine"],
+  ["Miramichi", ["NB"]],
+  ["Margaree", ["NS"], "Cape Breton Island"],
+  ["Churchill (Labrador)", ["NL"], "Labrador"],
+  ["Exploits", ["NL"], "Island of Newfoundland"],
+  ["Coppermine", ["NT", "NU"]],
+  ["Thelon", ["NT", "NU"]],
+  ["Back", ["NU"]],
+  ["Kazan", ["NU"]]
+];
+
+// Lakes: same format
+const lakes = [
+  ["Great Bear Lake", ["NT"], "Largest lake entirely in Canada"],
+  ["Great Slave Lake", ["NT"], "Deepest lake in North America"],
+  ["Lake Superior", ["ON"], "Shared with the United States"],
+  ["Lake Huron", ["ON"], "Shared with the United States"],
+  ["Lake Erie", ["ON"], "Shared with the United States"],
+  ["Lake Ontario", ["ON"], "Shared with the United States"],
+  ["Lake of the Woods", ["ON", "MB"], "Shared with Minnesota"],
+  ["Lake Nipigon", ["ON"]],
+  ["Lake Nipissing", ["ON"]],
+  ["Lake Simcoe", ["ON"]],
+  ["Lake Winnipeg", ["MB"]],
+  ["Lake Winnipegosis", ["MB"]],
+  ["Lake Manitoba", ["MB"]],
+  ["Cedar Lake", ["MB"]],
+  ["Lake Athabasca", ["AB", "SK"]],
+  ["Lesser Slave Lake", ["AB"]],
+  ["Lake Claire", ["AB"], "Wood Buffalo National Park"],
+  ["Lake Louise", ["AB"], "Banff National Park"],
+  ["Reindeer Lake", ["SK", "MB"]],
+  ["Wollaston Lake", ["SK"]],
+  ["Lac la Ronge", ["SK"]],
+  ["Okanagan Lake", ["BC"]],
+  ["Kootenay Lake", ["BC"]],
+  ["Atlin Lake", ["BC"], "Northern tip extends into Yukon"],
+  ["Williston Lake", ["BC"], "Reservoir on the Peace River"],
+  ["Kluane Lake", ["YT"]],
+  ["Lake Mistassini", ["QC"]],
+  ["Lac Saint-Jean", ["QC"], "Source of the Saguenay River"],
+  ["Manicouagan Reservoir", ["QC"], "Impact crater lake"],
+  ["Smallwood Reservoir", ["NL"], "Labrador"],
+  ["Grand Lake", ["NB"]],
+  ["Bras d'Or Lake", ["NS"], "Tidal inland sea, Cape Breton Island"],
+  ["Nettilling Lake", ["NU"], "Baffin Island"],
+  ["Amadjuak Lake", ["NU"], "Baffin Island"],
+  ["Dubawnt Lake", ["NU"]]
+];
+
+// Other bodies of water (oceans, seas, bays, gulfs, straits): same format
+const waters = [
+  ["Arctic Ocean", ["YT", "NT", "NU"]],
+  ["Atlantic Ocean", ["NL", "NS", "NB", "QC", "PE"]],
+  ["Pacific Ocean", ["BC"]],
+  ["Hudson Bay", ["NU", "MB", "ON", "QC"], "Waters are part of Nunavut"],
+  ["James Bay", ["ON", "QC", "NU"]],
+  ["Ungava Bay", ["QC"]],
+  ["Hudson Strait", ["NU", "QC"]],
+  ["Foxe Basin", ["NU"]],
+  ["Baffin Bay", ["NU"], "Shared with Greenland"],
+  ["Davis Strait", ["NU"], "Shared with Greenland"],
+  ["Labrador Sea", ["NL"], "Shared with Greenland"],
+  ["Lancaster Sound", ["NU"]],
+  ["Coronation Gulf", ["NU"]],
+  ["Amundsen Gulf", ["NT"]],
+  ["Beaufort Sea", ["YT", "NT"], "Shared with Alaska"],
+  ["Gulf of St. Lawrence", ["QC", "NB", "PE", "NS", "NL"]],
+  ["Chaleur Bay", ["QC", "NB"]],
+  ["Northumberland Strait", ["NB", "NS", "PE"]],
+  ["Cabot Strait", ["NS", "NL"]],
+  ["Strait of Belle Isle", ["NL", "QC"]],
+  ["Bay of Fundy", ["NB", "NS"], "Highest tides in the world"],
+  ["Minas Basin", ["NS"]],
+  ["Placentia Bay", ["NL"]],
+  ["Conception Bay", ["NL"]],
+  ["Strait of Georgia", ["BC"]],
+  ["Juan de Fuca Strait", ["BC"], "Shared with Washington State"],
+  ["Queen Charlotte Sound", ["BC"]],
+  ["Hecate Strait", ["BC"]],
+  ["Dixon Entrance", ["BC"], "Shared with Alaska"]
+];
+
+// Mountains and ranges: same format
+const mountains = [
+  ["Mount Logan", ["YT"], "5,959 m, highest in Canada"],
+  ["Mount Saint Elias", ["YT"], "5,489 m, on the border with Alaska"],
+  ["Mount Lucania", ["YT"], "5,226 m"],
+  ["King Peak", ["YT"], "5,173 m"],
+  ["Mount Steele", ["YT"], "5,073 m"],
+  ["Mount Fairweather", ["BC"], "4,671 m, highest in BC, on the border with Alaska"],
+  ["Mount Waddington", ["BC"], "4,019 m, highest entirely in BC"],
+  ["Mount Robson", ["BC"], "3,954 m, highest in the Canadian Rockies"],
+  ["Mount Columbia", ["AB", "BC"], "3,747 m, highest in Alberta"],
+  ["Mount Assiniboine", ["AB", "BC"], "3,618 m"],
+  ["Mount Temple", ["AB"], "3,544 m, Banff National Park"],
+  ["Mount Edith Cavell", ["AB"], "3,363 m, Jasper National Park"],
+  ["Mount Garibaldi", ["BC"], "2,678 m, volcano"],
+  ["Mount Nirvana", ["NT"], "About 2,773 m, highest in the Northwest Territories"],
+  ["Barbeau Peak", ["NU"], "2,616 m, highest in Nunavut, Ellesmere Island"],
+  ["Mount Odin", ["NU"], "2,147 m, Baffin Island"],
+  ["Mount Thor", ["NU"], "1,675 m, Baffin Island, sheer granite face"],
+  ["Mont D'Iberville", ["QC", "NL"], "1,652 m, highest in Quebec and in Newfoundland and Labrador; also called Mount Caubvick"],
+  ["Mont Jacques-Cartier", ["QC"], "1,268 m, Gaspé Peninsula"],
+  ["Mont Tremblant", ["QC"], "875 m"],
+  ["Baldy Mountain", ["MB"], "832 m, highest in Manitoba"],
+  ["Mount Carleton", ["NB"], "817 m, highest in the Maritimes"],
+  ["The Cabox", ["NL"], "814 m, highest on the island of Newfoundland"],
+  ["Gros Morne", ["NL"], "807 m"],
+  ["Ishpatina Ridge", ["ON"], "693 m, highest in Ontario"],
+  ["White Hill", ["NS"], "532 m, highest in Nova Scotia, Cape Breton Island"],
+  ["Rocky Mountains", ["BC", "AB"], "Range, continues into the United States"],
+  ["Coast Mountains", ["BC", "YT"], "Range, continues into Alaska"],
+  ["Saint Elias Mountains", ["YT", "BC"], "Range, contains Canada's highest peaks"],
+  ["Columbia Mountains", ["BC"], "Range: Cariboo, Monashee, Selkirk and Purcell mountains"],
+  ["Cascade Range", ["BC"], "Range, continues into the United States"],
+  ["Mackenzie Mountains", ["YT", "NT"], "Range"],
+  ["Selwyn Mountains", ["YT", "NT"], "Range"],
+  ["Richardson Mountains", ["YT", "NT"], "Range"],
+  ["Arctic Cordillera", ["NU", "NL"], "Range, Baffin, Devon and Ellesmere islands to northern Labrador"],
+  ["Torngat Mountains", ["NL", "QC"], "Range"],
+  ["Laurentian Mountains", ["QC"], "Range"],
+  ["Chic-Choc Mountains", ["QC"], "Range, Gaspé Peninsula"],
+  ["Appalachian Mountains", ["QC", "NB", "NS", "NL"], "Range, continues into the United States"],
+  ["Long Range Mountains", ["NL"], "Range, western Newfoundland"],
+  ["Cypress Hills", ["AB", "SK"], "Upland, about 1,392 m in Saskatchewan, highest point in the province"]
+];
+
+// Plains and lowlands: same format
+const plains = [
+  ["Interior Plains", ["AB", "SK", "MB", "BC", "NT"], "Physiographic region between the Rockies and the Canadian Shield"],
+  ["Canadian Prairies", ["AB", "SK", "MB"], "Grassland and farmland, southern Interior Plains"],
+  ["Manitoba Plain", ["MB"], "First prairie level, lowest step of the prairies"],
+  ["Saskatchewan Plain", ["SK", "MB"], "Second prairie level"],
+  ["Alberta Plain", ["AB", "SK"], "Third prairie level, highest step of the prairies"],
+  ["Red River Valley", ["MB"], "Former bed of glacial Lake Agassiz, continues into the United States"],
+  ["Regina Plain", ["SK"], "Glacial lake plain"],
+  ["Palliser's Triangle", ["AB", "SK"], "Semi-arid southern prairie"],
+  ["Peace River Country", ["AB", "BC"], "Northernmost large farming region in Canada"],
+  ["Boreal Plains", ["AB", "SK", "MB", "BC"], "Ecozone, forested northern Interior Plains"],
+  ["Taiga Plains", ["NT", "AB", "BC", "YT"], "Ecozone, Mackenzie River basin"],
+  ["Great Slave Plain", ["NT", "AB"], "Lowland around the Slave River and Great Slave Lake"],
+  ["Mackenzie Delta", ["NT"], "Delta plain at the mouth of the Mackenzie River"],
+  ["Arctic Coastal Plain", ["YT", "NT"], "Beaufort Sea coast"],
+  ["Old Crow Flats", ["YT"], "Wetland plain, northern Yukon"],
+  ["Arctic Lowlands", ["NU", "NT"], "Flat sedimentary islands of the Arctic Archipelago"],
+  ["Hudson Bay Lowlands", ["ON", "MB", "QC"], "Largest wetland in North America"],
+  ["Great Clay Belt", ["ON", "QC"], "Former bed of glacial Lake Ojibway"],
+  ["Great Lakes Lowlands", ["ON"], "Southern Ontario, part of the Great Lakes–St. Lawrence Lowlands"],
+  ["St. Lawrence Lowlands", ["QC", "ON"], "Along the St. Lawrence River"],
+  ["Maritime Plain", ["NB", "PE", "NS"], "Lowland around the Northumberland Strait"],
+  ["Fraser Lowland", ["BC"], "Lower Fraser Valley and delta"]
+];
+
+const names = {
+  BC: "British Columbia", AB: "Alberta", SK: "Saskatchewan", MB: "Manitoba",
+  ON: "Ontario", QC: "Quebec", NB: "New Brunswick", NS: "Nova Scotia",
+  PE: "Prince Edward Island", NL: "Newfoundland and Labrador",
+  YT: "Yukon", NT: "Northwest Territories", NU: "Nunavut"
+};
+
+const typeLabel = { River: "River", Lake: "Lake", Water: "Ocean, sea, bay or strait", Mountain: "Mountain or range", Plain: "Plain or lowland" };
+const all = [
+  ...rivers.map(r => [...pad(r), "River"]),
+  ...lakes.map(r => [...pad(r), "Lake"]),
+  ...waters.map(r => [...pad(r), "Water"]),
+  ...mountains.map(r => [...pad(r), "Mountain"]),
+  ...plains.map(r => [...pad(r), "Plain"])
+];
+function pad(r) { return [r[0], r[1], r[2] || ""]; }
+
+const kindNames = { River: "Rivers", Lake: "Lakes", Water: "Other bodies of water", Mountain: "Mountains", Plain: "Plains" };
+
+function makeChips(containerId, map) {
+  const box = document.getElementById(containerId);
+  Object.keys(map).forEach(key => {
+    const label = document.createElement("label");
+    label.className = "chip";
+    label.innerHTML = `<input type="checkbox" value="${key}"><span>${map[key]}</span>`;
+    box.appendChild(label);
+  });
+  box.addEventListener("change", render);
+}
+makeChips("kinds", kindNames);
+makeChips("regions", names);
+
+function checked(containerId) {
+  return [...document.querySelectorAll(`#${containerId} input:checked`)].map(i => i.value);
+}
+
+function render() {
+  const kinds = checked("kinds"), regs = checked("regions");
+  const list = all.filter(r =>
+    (!kinds.length || kinds.includes(r[3])) &&
+    (!regs.length || r[1].some(c => regs.includes(c))));
+  document.getElementById("rows").innerHTML = list.length ? list.map(([name, regions, note, k]) => `
+    <tr>
+      <td class="name">${name}</td>
+      <td class="kind">${typeLabel[k]}</td>
+      <td>
+        <div class="tags">${regions.map(c => `<span class="tag">${names[c]}</span>`).join("")}</div>
+        ${note ? `<span class="note">${note}</span>` : ""}
+      </td>
+    </tr>`).join("")
+    : `<tr><td colspan="3">No entries match. Select other types or regions.</td></tr>`;
+  document.getElementById("count").textContent = `${list.length} entr${list.length === 1 ? "y" : "ies"}`;
+}
+
+document.getElementById("clear").addEventListener("click", () => {
+  document.querySelectorAll(".chips input").forEach(i => { i.checked = false; });
+  render();
+});
+render();
+</script>
+</body>
+</html>
