@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Canadian geographic features by location</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #EEF3F5; --surface: #FFFFFF; --ink: #16303A; --muted: #5B7480;
+  --rule: #C9D6DC; --accent: #2F6F8F; --accent-soft: #DCEAF1;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1E24; --surface: #16282F; --ink: #E3EDF1; --muted: #93AAB4;
+    --rule: #2A424B; --accent: #7FB7D3; --accent-soft: #1F3A46;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1E24; --surface: #16282F; --ink: #E3EDF1; --muted: #93AAB4;
+  --rule: #2A424B; --accent: #7FB7D3; --accent-soft: #1F3A46;
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 1rem/1.55 "Work Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: 56rem; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
+h1 {
+  font: 600 clamp(2rem, 5vw, 3rem)/1.1 "Newsreader", Georgia, "Times New Roman", serif;
+  margin: 0 0 .5rem; letter-spacing: -0.01em;
+}
+.intro { color: var(--muted); margin: 0 0 2rem; max-width: 40rem; }
+.controls { display: grid; gap: 1rem; margin-bottom: 1rem; }
+.filter { border: 0; margin: 0; padding: 0; min-width: 0; }
+legend { font-weight: 500; padding: 0; margin-bottom: .45rem; }
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.chip span {
+  display: inline-block; cursor: pointer; user-select: none;
+  padding: .35rem .75rem; border-radius: 999px; font-size: .9rem;
+  border: 1px solid var(--rule); background: var(--surface); color: var(--ink);
+}
+.chip input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.chip input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.status { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+.count { color: var(--muted); font-size: .9rem; }
+#clear {
+  font: inherit; font-size: .9rem; color: var(--accent); background: none;
+  border: 0; padding: 0; cursor: pointer; text-decoration: underline;
+}
+#clear:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; min-width: 36rem; }
+th, td { text-align: left; padding: .7rem 1rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 500; color: var(--muted); font-size: .9rem; background: var(--accent-soft); }
+tr:last-child td { border-bottom: none; }
+td.name { font: 600 1.1rem/1.3 "Newsreader", Georgia, serif; white-space: nowrap; }
+td.name a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+td.name a:hover, td.name a:focus-visible { color: var(--accent); text-decoration-color: var(--accent); }
+td.name a::after { content: " ↗"; font: 400 .8rem "Work Sans", system-ui, sans-serif; color: var(--muted); }
+td.kind { color: var(--muted); white-space: nowrap; font-size: .92rem; }
+.tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+.tag {
+  font-size: .82rem; padding: .1rem .5rem; border-radius: 4px;
+  background: var(--accent-soft); color: var(--accent); white-space: nowrap;
+}
+.note { display: block; color: var(--muted); font-size: .88rem; margin-top: .3rem; }
+td.used { width: 3.5rem; text-align: center; }
+td.used input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); cursor: pointer; }
+tr.is-used td.name, tr.is-used td.kind, tr.is-used .tags, tr.is-used .note { opacity: .45; }
+tr.is-used td.name { text-decoration: line-through; }
+.sync { color: var(--muted); font-size: .85rem; }
+.auth { display: flex; gap: .6rem; align-items: center; margin-left: auto; font-size: .9rem; }
+.who { color: var(--muted); }
+.linkbtn {
+  font: inherit; font-size: .9rem; color: var(--accent); background: none;
+  border: 0; padding: 0; cursor: pointer; text-decoration: underline;
+}
+.linkbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Canadian geographic features by location</h1>
+  <p class="intro">Major rivers, lakes, other bodies of water, mountains, plains, landmarks and landforms, and impact structures, and the provinces or territories they are in or border. Select any combination of types and regions; leave a group empty to include all.</p>
+
+  <div class="controls">
+    <fieldset class="filter">
+      <legend>Show</legend>
+      <div class="chips" id="kinds"></div>
+    </fieldset>
+    <fieldset class="filter">
+      <legend>In</legend>
+      <div class="chips" id="regions"></div>
+    </fieldset>
+    <fieldset class="filter">
+      <legend>Status</legend>
+      <div class="chips" id="status"></div>
+    </fieldset>
+    <div class="status">
+      <span class="count" id="count" aria-live="polite"></span>
+      <button type="button" id="clear">Clear filters</button>
+      <span class="sync" id="sync">Sign in to see and mark used names.</span>
+      <span class="auth"><span class="who" id="who"></span><button type="button" id="signin" class="linkbtn">Sign in with Google</button></span>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Used</th><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Location</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<script type="module">
+// ===== Firebase settings =====
+const firebaseConfig = {
+  apiKey: "AIzaSyCaYqQtA1A2vZUTKVNOtDxNYiJVlJzsVkE",
+  authDomain: "skp-field-trial-target-names.firebaseapp.com",
+  projectId: "skp-field-trial-target-names",
+  storageBucket: "skp-field-trial-target-names.firebasestorage.app",
+  messagingSenderId: "925620712810",
+  appId: "1:925620712810:web:eb04abd18ede5511822113"
+};
+// Who may tick names is set only in the Firestore rules (editors() list).
+// ============================================
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+// Rivers: ["Name", ["CODE", ...], "Optional note"]
+const rivers = [
+  ["Mackenzie", ["NT"], "Great Slave Lake to the Beaufort Sea"],
+  ["Yukon", ["YT"], "Rises in British Columbia, continues into Alaska"],
+  ["Liard", ["YT", "BC", "NT"]],
+  ["Slave", ["AB", "NT"], "Flows into Great Slave Lake"],
+  ["Peace", ["BC", "AB"]],
+  ["Athabasca", ["AB"]],
+  ["Fraser", ["BC"]],
+  ["Columbia", ["BC"], "Continues into the United States"],
+  ["Skeena", ["BC"]],
+  ["North Saskatchewan", ["AB", "SK"]],
+  ["South Saskatchewan", ["AB", "SK"]],
+  ["Churchill", ["SK", "MB"]],
+  ["Assiniboine", ["SK", "MB"]],
+  ["Red", ["MB"], "Rises in the United States"],
+  ["Nelson", ["MB"]],
+  ["Albany", ["ON"]],
+  ["Moose", ["ON"]],
+  ["Ottawa", ["ON", "QC"], "Forms much of the Ontario–Quebec border"],
+  ["St. Lawrence", ["ON", "QC"]],
+  ["Saguenay", ["QC"]],
+  ["La Grande", ["QC"]],
+  ["Koksoak", ["QC"], "Nunavik"],
+  ["Saint John", ["NB"], "Rises in Maine"],
+  ["Miramichi", ["NB"]],
+  ["Margaree", ["NS"], "Cape Breton Island"],
+  ["Churchill (Labrador)", ["NL"], "Labrador"],
+  ["Exploits", ["NL"], "Island of Newfoundland"],
+  ["Coppermine", ["NT", "NU"]],
+  ["Thelon", ["NT", "NU"]],
+  ["Back", ["NU"]],
+  ["Kazan", ["NU"]]
+];
+
+// Lakes: same format
+const lakes = [
+  ["Great Bear Lake", ["NT"], "Largest lake entirely in Canada"],
+  ["Great Slave Lake", ["NT"], "Deepest lake in North America"],
+  ["Lake Superior", ["ON"], "Shared with the United States"],
+  ["Lake Huron", ["ON"], "Shared with the United States"],
+  ["Lake Erie", ["ON"], "Shared with the United States"],
+  ["Lake Ontario", ["ON"], "Shared with the United States"],
+  ["Lake of the Woods", ["ON", "MB"], "Shared with Minnesota"],
+  ["Lake Nipigon", ["ON"]],
+  ["Lake Nipissing", ["ON"]],
+  ["Lake Simcoe", ["ON"]],
+  ["Lake Winnipeg", ["MB"]],
+  ["Lake Winnipegosis", ["MB"]],
+  ["Lake Manitoba", ["MB"]],
+  ["Cedar Lake", ["MB"]],
+  ["Lake Athabasca", ["AB", "SK"]],
+  ["Lesser Slave Lake", ["AB"]],
+  ["Lake Claire", ["AB"], "Wood Buffalo National Park"],
+  ["Lake Louise", ["AB"], "Banff National Park"],
+  ["Reindeer Lake", ["SK", "MB"]],
+  ["Wollaston Lake", ["SK"]],
+  ["Lac la Ronge", ["SK"]],
+  ["Okanagan Lake", ["BC"]],
+  ["Kootenay Lake", ["BC"]],
+  ["Atlin Lake", ["BC"], "Northern tip extends into Yukon"],
+  ["Williston Lake", ["BC"], "Reservoir on the Peace River"],
+  ["Kluane Lake", ["YT"]],
+  ["Lake Mistassini", ["QC"]],
+  ["Lac Saint-Jean", ["QC"], "Source of the Saguenay River"],
+  ["Manicouagan Reservoir", ["QC"], "Impact crater lake"],
+  ["Smallwood Reservoir", ["NL"], "Labrador"],
+  ["Grand Lake", ["NB"]],
+  ["Bras d'Or Lake", ["NS"], "Tidal inland sea, Cape Breton Island"],
+  ["Nettilling Lake", ["NU"], "Baffin Island"],
+  ["Amadjuak Lake", ["NU"], "Baffin Island"],
+  ["Dubawnt Lake", ["NU"]]
+];
+
+// Other bodies of water (oceans, seas, bays, gulfs, straits): same format
+const waters = [
+  ["Arctic Ocean", ["YT", "NT", "NU"]],
+  ["Atlantic Ocean", ["NL", "NS", "NB", "QC", "PE"]],
+  ["Pacific Ocean", ["BC"]],
+  ["Hudson Bay", ["NU", "MB", "ON", "QC"], "Waters are part of Nunavut"],
+  ["James Bay", ["ON", "QC", "NU"]],
+  ["Ungava Bay", ["QC"]],
+  ["Hudson Strait", ["NU", "QC"]],
+  ["Foxe Basin", ["NU"]],
+  ["Baffin Bay", ["NU"], "Shared with Greenland"],
+  ["Davis Strait", ["NU"], "Shared with Greenland"],
+  ["Labrador Sea", ["NL"], "Shared with Greenland"],
+  ["Lancaster Sound", ["NU"]],
+  ["Coronation Gulf", ["NU"]],
+  ["Amundsen Gulf", ["NT"]],
+  ["Beaufort Sea", ["YT", "NT"], "Shared with Alaska"],
+  ["Gulf of St. Lawrence", ["QC", "NB", "PE", "NS", "NL"]],
+  ["Chaleur Bay", ["QC", "NB"]],
+  ["Northumberland Strait", ["NB", "NS", "PE"]],
+  ["Cabot Strait", ["NS", "NL"]],
+  ["Strait of Belle Isle", ["NL", "QC"]],
+  ["Bay of Fundy", ["NB", "NS"], "Highest tides in the world"],
+  ["Minas Basin", ["NS"]],
+  ["Placentia Bay", ["NL"]],
+  ["Conception Bay", ["NL"]],
+  ["Strait of Georgia", ["BC"]],
+  ["Juan de Fuca Strait", ["BC"], "Shared with Washington State"],
+  ["Queen Charlotte Sound", ["BC"]],
+  ["Hecate Strait", ["BC"]],
+  ["Dixon Entrance", ["BC"], "Shared with Alaska"]
+];
+
+// Mountains and ranges: same format
+const mountains = [
+  ["Mount Logan", ["YT"], "5,959 m, highest in Canada"],
+  ["Mount Saint Elias", ["YT"], "5,489 m, on the border with Alaska"],
+  ["Mount Lucania", ["YT"], "5,226 m"],
+  ["King Peak", ["YT"], "5,173 m"],
+  ["Mount Steele", ["YT"], "5,073 m"],
+  ["Mount Fairweather", ["BC"], "4,671 m, highest in BC, on the border with Alaska"],
+  ["Mount Waddington", ["BC"], "4,019 m, highest entirely in BC"],
+  ["Mount Robson", ["BC"], "3,954 m, highest in the Canadian Rockies"],
+  ["Mount Columbia", ["AB", "BC"], "3,747 m, highest in Alberta"],
+  ["Mount Assiniboine", ["AB", "BC"], "3,618 m"],
+  ["Mount Temple", ["AB"], "3,544 m, Banff National Park"],
+  ["Mount Edith Cavell", ["AB"], "3,363 m, Jasper National Park"],
+  ["Mount Garibaldi", ["BC"], "2,678 m, volcano"],
+  ["Mount Nirvana", ["NT"], "About 2,773 m, highest in the Northwest Territories"],
+  ["Barbeau Peak", ["NU"], "2,616 m, highest in Nunavut, Ellesmere Island"],
+  ["Mount Odin", ["NU"], "2,147 m, Baffin Island"],
+  ["Mount Thor", ["NU"], "1,675 m, Baffin Island, sheer granite face"],
+  ["Mont D'Iberville", ["QC", "NL"], "1,652 m, highest in Quebec and in Newfoundland and Labrador; also called Mount Caubvick"],
+  ["Mont Jacques-Cartier", ["QC"], "1,268 m, Gaspé Peninsula"],
+  ["Mont Tremblant", ["QC"], "875 m"],
+  ["Baldy Mountain", ["MB"], "832 m, highest in Manitoba"],
+  ["Mount Carleton", ["NB"], "817 m, highest in the Maritimes"],
+  ["The Cabox", ["NL"], "814 m, highest on the island of Newfoundland"],
+  ["Gros Morne", ["NL"], "807 m"],
+  ["Ishpatina Ridge", ["ON"], "693 m, highest in Ontario"],
+  ["White Hill", ["NS"], "532 m, highest in Nova Scotia, Cape Breton Island"],
+  ["Rocky Mountains", ["BC", "AB"], "Range, continues into the United States"],
+  ["Coast Mountains", ["BC", "YT"], "Range, continues into Alaska"],
+  ["Saint Elias Mountains", ["YT", "BC"], "Range, contains Canada's highest peaks"],
+  ["Columbia Mountains", ["BC"], "Range: Cariboo, Monashee, Selkirk and Purcell mountains"],
+  ["Cascade Range", ["BC"], "Range, continues into the United States"],
+  ["Mackenzie Mountains", ["YT", "NT"], "Range"],
+  ["Selwyn Mountains", ["YT", "NT"], "Range"],
+  ["Richardson Mountains", ["YT", "NT"], "Range"],
+  ["Arctic Cordillera", ["NU", "NL"], "Range, Baffin, Devon and Ellesmere islands to northern Labrador"],
+  ["Torngat Mountains", ["NL", "QC"], "Range"],
+  ["Laurentian Mountains", ["QC"], "Range"],
+  ["Chic-Choc Mountains", ["QC"], "Range, Gaspé Peninsula"],
+  ["Appalachian Mountains", ["QC", "NB", "NS", "NL"], "Range, continues into the United States"],
+  ["Long Range Mountains", ["NL"], "Range, western Newfoundland"],
+  ["Cypress Hills", ["AB", "SK"], "Upland, about 1,392 m in Saskatchewan, highest point in the province"]
+];
+
+// Plains and lowlands: same format
+const plains = [
+  ["Interior Plains", ["AB", "SK", "MB", "BC", "NT"], "Physiographic region between the Rockies and the Canadian Shield"],
+  ["Canadian Prairies", ["AB", "SK", "MB"], "Grassland and farmland, southern Interior Plains"],
+  ["Manitoba Plain", ["MB"], "First prairie level, lowest step of the prairies"],
+  ["Saskatchewan Plain", ["SK", "MB"], "Second prairie level"],
+  ["Alberta Plain", ["AB", "SK"], "Third prairie level, highest step of the prairies"],
+  ["Red River Valley", ["MB"], "Former bed of glacial Lake Agassiz, continues into the United States"],
+  ["Regina Plain", ["SK"], "Glacial lake plain"],
+  ["Palliser's Triangle", ["AB", "SK"], "Semi-arid southern prairie"],
+  ["Peace River Country", ["AB", "BC"], "Northernmost large farming region in Canada"],
+  ["Boreal Plains", ["AB", "SK", "MB", "BC"], "Ecozone, forested northern Interior Plains"],
+  ["Taiga Plains", ["NT", "AB", "BC", "YT"], "Ecozone, Mackenzie River basin"],
+  ["Great Slave Plain", ["NT", "AB"], "Lowland around the Slave River and Great Slave Lake"],
+  ["Mackenzie Delta", ["NT"], "Delta plain at the mouth of the Mackenzie River"],
+  ["Arctic Coastal Plain", ["YT", "NT"], "Beaufort Sea coast"],
+  ["Old Crow Flats", ["YT"], "Wetland plain, northern Yukon"],
+  ["Arctic Lowlands", ["NU", "NT"], "Flat sedimentary islands of the Arctic Archipelago"],
+  ["Hudson Bay Lowlands", ["ON", "MB", "QC"], "Largest wetland in North America"],
+  ["Great Clay Belt", ["ON", "QC"], "Former bed of glacial Lake Ojibway"],
+  ["Great Lakes Lowlands", ["ON"], "Southern Ontario, part of the Great Lakes–St. Lawrence Lowlands"],
+  ["St. Lawrence Lowlands", ["QC", "ON"], "Along the St. Lawrence River"],
+  ["Maritime Plain", ["NB", "PE", "NS"], "Lowland around the Northumberland Strait"],
+  ["Fraser Lowland", ["BC"], "Lower Fraser Valley and delta"]
+];
+
+// Landmarks and landforms: same format
+const landforms = [
+  ["Okotoks Erratic (Big Rock)", ["AB"], "Glacial erratic, about 16,500 tonnes of quartzite, Foothills Erratics Train"],
+  ["Drumheller hoodoos", ["AB"], "Sandstone hoodoos, Red Deer River badlands"],
+  ["Dinosaur Provincial Park badlands", ["AB"], "Eroded badlands and Late Cretaceous fossil beds, UNESCO World Heritage Site"],
+  ["Writing-on-Stone (Áísínai'pi)", ["AB"], "Sandstone hoodoos with Indigenous rock art, UNESCO World Heritage Site"],
+  ["Maligne Canyon", ["AB"], "Limestone slot canyon, Jasper National Park"],
+  ["Columbia Icefield", ["AB", "BC"], "Largest icefield in the Rockies, feeds the Athabasca Glacier"],
+  ["Hells Gate", ["BC"], "Narrowest point of the Fraser Canyon"],
+  ["Grand Canyon of the Stikine", ["BC"], "Deep river canyon, northern BC"],
+  ["Kluane Icefield", ["YT"], "Largest non-polar icefield in the world"],
+  ["Carcross Desert", ["YT"], "Small dune field of glacial lake sand"],
+  ["Pingo Canadian Landmark", ["NT"], "Ice-cored hills near Tuktoyaktuk, including Ibyuk Pingo"],
+  ["Virginia Falls", ["NT"], "About 96 m, South Nahanni River"],
+  ["Athabasca Sand Dunes", ["SK"], "Largest active dune field in Canada, south shore of Lake Athabasca"],
+  ["Great Sand Hills", ["SK"], "Partly active dune field, southwestern Saskatchewan"],
+  ["Niagara Escarpment", ["ON"], "Cuesta from Niagara Falls to the Bruce Peninsula, UNESCO Biosphere Reserve"],
+  ["Niagara Falls (Horseshoe Falls)", ["ON"], "Shared with the United States"],
+  ["Flowerpot Island", ["ON"], "Dolostone sea stacks, Fathom Five National Marine Park"],
+  ["Sleeping Giant", ["ON"], "Mesa formation on the Sibley Peninsula, Thunder Bay"],
+  ["Scarborough Bluffs", ["ON"], "Glacial sediment cliffs, Lake Ontario shore"],
+  ["Thousand Islands", ["ON"], "Canadian Shield archipelago, St. Lawrence River, shared with the United States"],
+  ["Percé Rock", ["QC"], "Limestone sea stack with a natural arch, Gaspé"],
+  ["Montmorency Falls", ["QC"], "About 83 m, near Quebec City"],
+  ["Hopewell Rocks", ["NB"], "Tidal sea stacks, Bay of Fundy"],
+  ["Greenwich Dunes", ["PE"], "Parabolic dune system, Prince Edward Island National Park"],
+  ["Balancing Rock", ["NS"], "Basalt column on a narrow base, Digby Neck"],
+  ["Sable Island", ["NS"], "Sand island on the Scotian Shelf"],
+  ["Tablelands", ["NL"], "Exposed Earth mantle peridotite, Gros Morne National Park"],
+  ["Western Brook Pond", ["NL"], "Landlocked fjord, Gros Morne National Park"]
+];
+
+// Impact structures: same format
+const impacts = [
+  ["Sudbury Basin", ["ON"], "Original crater about 200 km, about 1.85 billion years, nickel and copper mining"],
+  ["Manicouagan", ["QC"], "About 100 km, about 214 million years, ring-shaped reservoir"],
+  ["Charlevoix", ["QC"], "About 54 km, north shore of the St. Lawrence"],
+  ["Clearwater Lakes", ["QC"], "Two craters, about 36 and 26 km, formed at different times"],
+  ["Pingualuit", ["QC"], "About 3.4 km, water-filled crater, Ungava Peninsula"],
+  ["Presqu'île", ["QC"], "About 24 km"],
+  ["Mistastin Lake", ["NL"], "About 28 km, lunar analogue site"],
+  ["Haughton", ["NU"], "About 23 km, Devon Island, Mars analogue site"],
+  ["Tunnunik", ["NT"], "About 25 km, Victoria Island, confirmed 2012"],
+  ["Nicholson Lake", ["NT"], "About 12.5 km"],
+  ["Carswell", ["SK"], "About 39 km, uranium deposits"],
+  ["Deep Bay", ["SK"], "About 13 km, Reindeer Lake"],
+  ["Gow Lake", ["SK"], "About 4 km"],
+  ["Steen River", ["AB"], "About 25 km, buried"],
+  ["Eagle Butte", ["AB"], "About 10 km, buried"],
+  ["Whitecourt", ["AB"], "About 36 m, about 1,100 years old, iron meteorite fragments"],
+  ["Saint Martin", ["MB"], "About 40 km, partly buried"],
+  ["West Hawk Lake", ["MB"], "About 2.4 km, Whiteshell Provincial Park"],
+  ["Slate Islands", ["ON"], "About 30 km, islands in Lake Superior"],
+  ["Wanapitei Lake", ["ON"], "About 7.5 km, near Sudbury"],
+  ["Brent", ["ON"], "About 3.8 km, Algonquin Provincial Park"],
+  ["Holleford", ["ON"], "About 2.4 km, buried"],
+  ["Montagnais", ["NS"], "About 45 km, beneath the Scotian Shelf"]
+];
+
+const names = {
+  BC: "British Columbia", AB: "Alberta", SK: "Saskatchewan", MB: "Manitoba",
+  ON: "Ontario", QC: "Quebec", NB: "New Brunswick", NS: "Nova Scotia",
+  PE: "Prince Edward Island", NL: "Newfoundland and Labrador",
+  YT: "Yukon", NT: "Northwest Territories", NU: "Nunavut"
+};
+
+const typeLabel = { River: "River", Lake: "Lake", Water: "Ocean, sea, bay or strait", Mountain: "Mountain or range", Plain: "Plain or lowland", Landform: "Landmark or landform", Impact: "Impact structure" };
+const all = [
+  ...rivers.map(r => [...pad(r), "River"]),
+  ...lakes.map(r => [...pad(r), "Lake"]),
+  ...waters.map(r => [...pad(r), "Water"]),
+  ...mountains.map(r => [...pad(r), "Mountain"]),
+  ...plains.map(r => [...pad(r), "Plain"]),
+  ...landforms.map(r => [...pad(r), "Landform"]),
+  ...impacts.map(r => [...pad(r), "Impact"])
+];
+function pad(r) { return [r[0], r[1], r[2] || ""]; }
+
+// Wikipedia links: opens the article when the query matches a title or redirect, otherwise search results
+const wikiOverride = {
+  "River|Churchill": "Churchill River (Hudson Bay)",
+  "River|Churchill (Labrador)": "Churchill River (Atlantic)",
+  "River|Red": "Red River of the North",
+  "River|St. Lawrence": "Saint Lawrence River",
+  "River|Saint John": "Saint John River (Bay of Fundy)",
+  "River|Moose": "Moose River (Ontario)",
+  "River|Back": "Back River (Nunavut)",
+  "Impact|Sudbury Basin": "Sudbury Basin",
+  "Impact|Clearwater Lakes": "Clearwater Lakes",
+  "Impact|Mistastin Lake": "Mistastin crater",
+  "Impact|Charlevoix": "Charlevoix impact structure",
+  "Impact|Steen River": "Steen River impact structure",
+  "Impact|Montagnais": "Montagnais impact structure",
+  "Landform|Okotoks Erratic (Big Rock)": "Okotoks Erratic",
+  "Landform|Writing-on-Stone (Áísínai'pi)": "Writing-on-Stone Provincial Park",
+  "Landform|Drumheller hoodoos": "Hoodoos (Drumheller)",
+  "Landform|Dinosaur Provincial Park badlands": "Dinosaur Provincial Park",
+  "Landform|Niagara Falls (Horseshoe Falls)": "Horseshoe Falls",
+  "Landform|Tablelands": "Tablelands (Newfoundland)"
+};
+function wikiUrl(name, k) {
+  let q = wikiOverride[k + "|" + name];
+  if (!q) q = k === "River" ? name + " River" : k === "Impact" ? name + " crater" : name;
+  return "https://en.wikipedia.org/wiki/Special:Search?go=Go&search=" + encodeURIComponent(q);
+}
+
+const kindNames = { River: "Rivers", Lake: "Lakes", Water: "Other bodies of water", Mountain: "Mountains", Plain: "Plains", Landform: "Landmarks and landforms", Impact: "Impact structures" };
+
+function makeChips(containerId, map) {
+  const box = document.getElementById(containerId);
+  Object.keys(map).forEach(key => {
+    const label = document.createElement("label");
+    label.className = "chip";
+    label.innerHTML = `<input type="checkbox" value="${key}"><span>${map[key]}</span>`;
+    box.appendChild(label);
+  });
+  box.addEventListener("change", render);
+}
+makeChips("kinds", kindNames);
+makeChips("regions", names);
+makeChips("status", { Unused: "Not used", Used: "Used" });
+
+function checked(containerId) {
+  return [...document.querySelectorAll(`#${containerId} input:checked`)].map(i => i.value);
+}
+
+// Shared "used" state: one db document per used name in collection "used"
+function idOf(name, k) { return (k + "-" + name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+let usedIds = new Set();
+let canEdit = false;
+
+function render() {
+  const kinds = checked("kinds"), regs = checked("regions"), stat = checked("status");
+  const list = all.filter(r =>
+    (!kinds.length || kinds.includes(r[3])) &&
+    (!regs.length || r[1].some(c => regs.includes(c))) &&
+    (!stat.length || stat.includes(usedIds.has(idOf(r[0], r[3])) ? "Used" : "Unused")));
+  document.getElementById("rows").innerHTML = list.length ? list.map(([name, regions, note, k]) => {
+    const id = idOf(name, k), u = usedIds.has(id);
+    return `
+    <tr class="${u ? "is-used" : ""}">
+      <td class="used"><input type="checkbox" data-id="${id}" aria-label="Mark ${name} as used" ${u ? "checked" : ""} ${canEdit ? "" : "disabled"}></td>
+      <td class="name"><a href="${wikiUrl(name, k)}" target="_blank" rel="noopener noreferrer">${name}</a></td>
+      <td class="kind">${typeLabel[k]}</td>
+      <td>
+        <div class="tags">${regions.map(c => `<span class="tag">${names[c]}</span>`).join("")}</div>
+        ${note ? `<span class="note">${note}</span>` : ""}
+      </td>
+    </tr>`; }).join("")
+    : `<tr><td colspan="4">No entries match. Select other types or regions.</td></tr>`;
+  document.getElementById("count").textContent = `${list.length} entr${list.length === 1 ? "y" : "ies"} · ${usedIds.size} of ${all.length} used`;
+}
+
+document.getElementById("clear").addEventListener("click", () => {
+  document.querySelectorAll(".chips input").forEach(i => { i.checked = false; });
+  render();
+});
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const usedCol = collection(db, "used");
+const sync = document.getElementById("sync");
+const who = document.getElementById("who");
+const signBtn = document.getElementById("signin");
+let user = null, unsub = null;
+
+signBtn.addEventListener("click", async () => {
+  try {
+    if (user) await signOut(auth);
+    else await signInWithPopup(auth, new GoogleAuthProvider());
+  } catch (err) { sync.textContent = "Sign-in failed: " + err.code; }
+});
+
+onAuthStateChanged(auth, u => {
+  user = u;
+  if (unsub) { unsub(); unsub = null; }
+  usedIds = new Set();
+  canEdit = !!u;
+  who.textContent = u ? u.email : "";
+  signBtn.textContent = u ? "Sign out" : "Sign in with Google";
+  if (!u) { sync.textContent = "Sign in to see and mark used names."; render(); return; }
+  sync.textContent = "Connecting to shared list…";
+  unsub = onSnapshot(usedCol, snap => {
+    usedIds = new Set(snap.docs.map(d => d.id));
+    sync.textContent = "Shared list: changes are saved for everyone.";
+    render();
+  }, err => { sync.textContent = "Could not load the shared list (" + err.code + ")."; });
+  render();
+});
+
+document.getElementById("rows").addEventListener("change", async e => {
+  const box = e.target;
+  if (!box.matches("input[data-id]") || !canEdit) return;
+  const ref = doc(db, "used", box.dataset.id);
+  box.disabled = true;
+  try {
+    if (box.checked) await setDoc(ref, { used: true, at: serverTimestamp(), by: user.email });
+    else await deleteDoc(ref);
+  } catch (err) {
+    box.checked = !box.checked;
+    sync.textContent = err.code === "permission-denied" ? "Could not save that change: this account is not on the editor list." : "Could not save that change (" + err.code + ").";
+  } finally { box.disabled = false; }
+});
+
+render();
+</script>
+</body>
+</html>
