@@ -78,7 +78,18 @@ td.used input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); curs
 tr.is-used td.name, tr.is-used td.kind, tr.is-used .tags, tr.is-used .note { opacity: .45; }
 tr.is-used td.name { text-decoration: line-through; }
 .sync { color: var(--muted); font-size: .85rem; }
-.auth { display: flex; gap: .6rem; align-items: center; margin-left: auto; font-size: .9rem; }
+.auth { font-size: .9rem; }
+.authrow { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+.authrow[hidden] { display: none; }
+.authrow input {
+  font: inherit; font-size: .9rem; padding: .35rem .6rem; min-width: 0; width: 13rem; max-width: 100%;
+  border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink);
+}
+.btn {
+  font: inherit; font-size: .9rem; padding: .35rem .9rem; border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--accent); background: var(--accent); color: var(--surface);
+}
+.btn:focus-visible, .authrow input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .who { color: var(--muted); }
 .linkbtn {
   font: inherit; font-size: .9rem; color: var(--accent); background: none;
@@ -109,7 +120,22 @@ tr.is-used td.name { text-decoration: line-through; }
       <span class="count" id="count" aria-live="polite"></span>
       <button type="button" id="clear">Clear filters</button>
       <span class="sync" id="sync">Sign in to see and mark used names.</span>
-      <span class="auth"><span class="who" id="who"></span><button type="button" id="signin" class="linkbtn">Sign in with Google</button></span>
+    </div>
+    <div class="auth">
+      <form id="signedOut" class="authrow">
+        <input type="email" id="email" placeholder="Email" autocomplete="email" aria-label="Email">
+        <input type="password" id="password" placeholder="Password" autocomplete="current-password" aria-label="Password">
+        <button type="submit" class="btn">Sign in</button>
+        <button type="button" class="linkbtn" id="createAcct">Create account</button>
+        <button type="button" class="linkbtn" id="resetPw">Forgot password</button>
+        <button type="button" class="linkbtn" id="signinGoogle">Sign in with Google</button>
+      </form>
+      <div id="signedIn" class="authrow" hidden>
+        <span class="who" id="who"></span>
+        <button type="button" class="linkbtn" id="checkVerify" hidden>I have verified my email</button>
+        <button type="button" class="linkbtn" id="resendVerify" hidden>Resend verification email</button>
+        <button type="button" class="linkbtn" id="signout">Sign out</button>
+      </div>
     </div>
   </div>
 
@@ -136,7 +162,7 @@ const firebaseConfig = {
 // ============================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 // Rivers: ["Name", ["CODE", ...], "Optional note"]
@@ -480,24 +506,72 @@ const db = getFirestore(app);
 const usedCol = collection(db, "used");
 const sync = document.getElementById("sync");
 const who = document.getElementById("who");
-const signBtn = document.getElementById("signin");
+const $ = id => document.getElementById(id);
+const emailIn = $("email"), pwIn = $("password");
 let user = null, unsub = null;
 
-signBtn.addEventListener("click", async () => {
+const messages = {
+  "auth/invalid-credential": "Wrong email or password.",
+  "auth/wrong-password": "Wrong email or password.",
+  "auth/user-not-found": "No account with this email. Use Create account first.",
+  "auth/email-already-in-use": "An account with this email already exists. Use Sign in.",
+  "auth/weak-password": "Password must be at least 6 characters.",
+  "auth/invalid-email": "Enter a valid email address.",
+  "auth/missing-password": "Enter a password.",
+  "auth/too-many-requests": "Too many attempts. Wait a few minutes and try again.",
+  "auth/popup-closed-by-user": "Sign-in window closed before finishing."
+};
+const say = err => { sync.textContent = messages[err.code] || ("Error: " + err.code); };
+const email = () => emailIn.value.trim().toLowerCase();
+const backUrl = () => ({ url: location.href.split(/[?#]/)[0] });
+
+$("signedOut").addEventListener("submit", async e => {
+  e.preventDefault();
+  try { await signInWithEmailAndPassword(auth, email(), pwIn.value); } catch (err) { say(err); }
+});
+$("createAcct").addEventListener("click", async () => {
   try {
-    if (user) await signOut(auth);
-    else await signInWithPopup(auth, new GoogleAuthProvider());
-  } catch (err) { sync.textContent = "Sign-in failed: " + err.code; }
+    const cred = await createUserWithEmailAndPassword(auth, email(), pwIn.value);
+    await sendEmailVerification(cred.user, backUrl());
+  } catch (err) { say(err); }
+});
+$("resetPw").addEventListener("click", async () => {
+  if (!email()) { sync.textContent = "Enter your email address first, then click Forgot password."; return; }
+  try {
+    await sendPasswordResetEmail(auth, email(), backUrl());
+    sync.textContent = "If an account exists for " + email() + ", a password reset email is on its way. Check the spam folder too.";
+  } catch (err) { say(err); }
+});
+$("signinGoogle").addEventListener("click", async () => {
+  try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch (err) { say(err); }
+});
+$("signout").addEventListener("click", () => signOut(auth));
+$("resendVerify").addEventListener("click", async () => {
+  try { await sendEmailVerification(user, backUrl()); sync.textContent = "Verification email sent to " + user.email + ". Check the spam folder too."; }
+  catch (err) { say(err); }
+});
+$("checkVerify").addEventListener("click", async () => {
+  await user.reload();
+  await user.getIdToken(true);
+  setUser(auth.currentUser);
 });
 
-onAuthStateChanged(auth, u => {
+function setUser(u) {
   user = u;
   if (unsub) { unsub(); unsub = null; }
   usedIds = new Set();
-  canEdit = !!u;
+  const verified = !!u && u.emailVerified;
+  canEdit = verified;
+  $("signedOut").hidden = !!u;
+  $("signedIn").hidden = !u;
+  $("checkVerify").hidden = $("resendVerify").hidden = !u || verified;
   who.textContent = u ? u.email : "";
-  signBtn.textContent = u ? "Sign out" : "Sign in with Google";
-  if (!u) { sync.textContent = "Sign in to see and mark used names."; render(); return; }
+  if (u) pwIn.value = "";
+  if (!u) { sync.textContent = "Sign in to see and mark used names. New users: enter your email and a password, then click Create account."; render(); return; }
+  if (!verified) {
+    sync.textContent = "Verify your email: open the link sent to " + u.email + " (check spam too), then click \"I have verified my email\".";
+    render(); return;
+  }
   sync.textContent = "Connecting to shared list…";
   unsub = onSnapshot(usedCol, snap => {
     usedIds = new Set(snap.docs.map(d => d.id));
@@ -505,7 +579,8 @@ onAuthStateChanged(auth, u => {
     render();
   }, err => { sync.textContent = "Could not load the shared list (" + err.code + ")."; });
   render();
-});
+}
+onAuthStateChanged(auth, setUser);
 
 document.getElementById("rows").addEventListener("change", async e => {
   const box = e.target;
