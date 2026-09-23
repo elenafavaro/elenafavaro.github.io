@@ -63,6 +63,9 @@ th, td { text-align: left; padding: .7rem 1rem; border-bottom: 1px solid var(--r
 th { font-weight: 500; color: var(--muted); font-size: .9rem; background: var(--accent-soft); }
 tr:last-child td { border-bottom: none; }
 td.name { font: 600 1.1rem/1.3 "Newsreader", Georgia, serif; white-space: nowrap; }
+td.name a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+td.name a:hover, td.name a:focus-visible { color: var(--accent); text-decoration-color: var(--accent); }
+td.name a::after { content: " ↗"; font: 400 .8rem "Work Sans", system-ui, sans-serif; color: var(--muted); }
 td.kind { color: var(--muted); white-space: nowrap; font-size: .92rem; }
 .tags { display: flex; flex-wrap: wrap; gap: .35rem; }
 .tag {
@@ -70,18 +73,12 @@ td.kind { color: var(--muted); white-space: nowrap; font-size: .92rem; }
   background: var(--accent-soft); color: var(--accent); white-space: nowrap;
 }
 .note { display: block; color: var(--muted); font-size: .88rem; margin-top: .3rem; }
-.aside {
-  margin-top: 2rem; padding: 1rem 1.25rem; border-left: 3px solid var(--accent);
-  background: var(--surface); border-radius: 0 8px 8px 0;
-}
-.aside h2 { font: 600 1.2rem/1.3 "Newsreader", Georgia, serif; margin: 0 0 .4rem; }
-.aside p { margin: 0; }
 </style>
 </head>
 <body>
 <main>
   <h1>Canadian geographic features by location</h1>
-  <p class="intro">Major rivers, lakes, other bodies of water, mountains and plains, and the provinces or territories they are in or border. Select any combination of types and regions; leave a group empty to include all.</p>
+  <p class="intro">Major rivers, lakes, other bodies of water, mountains, plains, landmarks and landforms, and impact structures, and the provinces or territories they are in or border. Select any combination of types and regions; leave a group empty to include all.</p>
 
   <div class="controls">
     <fieldset class="filter">
@@ -104,6 +101,8 @@ td.kind { color: var(--muted); white-space: nowrap; font-size: .92rem; }
       <tbody id="rows"></tbody>
     </table>
   </div>
+
+</main>
 
 <script>
 // Rivers: ["Name", ["CODE", ...], "Optional note"]
@@ -284,6 +283,65 @@ const plains = [
   ["Fraser Lowland", ["BC"], "Lower Fraser Valley and delta"]
 ];
 
+// Landmarks and landforms: same format
+const landforms = [
+  ["Okotoks Erratic (Big Rock)", ["AB"], "Glacial erratic, about 16,500 tonnes of quartzite, Foothills Erratics Train"],
+  ["Drumheller hoodoos", ["AB"], "Sandstone hoodoos, Red Deer River badlands"],
+  ["Dinosaur Provincial Park badlands", ["AB"], "Eroded badlands and Late Cretaceous fossil beds, UNESCO World Heritage Site"],
+  ["Writing-on-Stone (Áísínai'pi)", ["AB"], "Sandstone hoodoos with Indigenous rock art, UNESCO World Heritage Site"],
+  ["Maligne Canyon", ["AB"], "Limestone slot canyon, Jasper National Park"],
+  ["Columbia Icefield", ["AB", "BC"], "Largest icefield in the Rockies, feeds the Athabasca Glacier"],
+  ["Hells Gate", ["BC"], "Narrowest point of the Fraser Canyon"],
+  ["Grand Canyon of the Stikine", ["BC"], "Deep river canyon, northern BC"],
+  ["Kluane Icefield", ["YT"], "Largest non-polar icefield in the world"],
+  ["Carcross Desert", ["YT"], "Small dune field of glacial lake sand"],
+  ["Pingo Canadian Landmark", ["NT"], "Ice-cored hills near Tuktoyaktuk, including Ibyuk Pingo"],
+  ["Virginia Falls", ["NT"], "About 96 m, South Nahanni River"],
+  ["Athabasca Sand Dunes", ["SK"], "Largest active dune field in Canada, south shore of Lake Athabasca"],
+  ["Great Sand Hills", ["SK"], "Partly active dune field, southwestern Saskatchewan"],
+  ["Niagara Escarpment", ["ON"], "Cuesta from Niagara Falls to the Bruce Peninsula, UNESCO Biosphere Reserve"],
+  ["Niagara Falls (Horseshoe Falls)", ["ON"], "Shared with the United States"],
+  ["Flowerpot Island", ["ON"], "Dolostone sea stacks, Fathom Five National Marine Park"],
+  ["Sleeping Giant", ["ON"], "Mesa formation on the Sibley Peninsula, Thunder Bay"],
+  ["Scarborough Bluffs", ["ON"], "Glacial sediment cliffs, Lake Ontario shore"],
+  ["Thousand Islands", ["ON"], "Canadian Shield archipelago, St. Lawrence River, shared with the United States"],
+  ["Percé Rock", ["QC"], "Limestone sea stack with a natural arch, Gaspé"],
+  ["Montmorency Falls", ["QC"], "About 83 m, near Quebec City"],
+  ["Hopewell Rocks", ["NB"], "Tidal sea stacks, Bay of Fundy"],
+  ["Greenwich Dunes", ["PE"], "Parabolic dune system, Prince Edward Island National Park"],
+  ["Balancing Rock", ["NS"], "Basalt column on a narrow base, Digby Neck"],
+  ["Sable Island", ["NS"], "Sand island on the Scotian Shelf"],
+  ["Tablelands", ["NL"], "Exposed Earth mantle peridotite, Gros Morne National Park"],
+  ["Western Brook Pond", ["NL"], "Landlocked fjord, Gros Morne National Park"]
+];
+
+// Impact structures: same format
+const impacts = [
+  ["Sudbury Basin", ["ON"], "Original crater about 200 km, about 1.85 billion years, nickel and copper mining"],
+  ["Manicouagan", ["QC"], "About 100 km, about 214 million years, ring-shaped reservoir"],
+  ["Charlevoix", ["QC"], "About 54 km, north shore of the St. Lawrence"],
+  ["Clearwater Lakes", ["QC"], "Two craters, about 36 and 26 km, formed at different times"],
+  ["Pingualuit", ["QC"], "About 3.4 km, water-filled crater, Ungava Peninsula"],
+  ["Presqu'île", ["QC"], "About 24 km"],
+  ["Mistastin Lake", ["NL"], "About 28 km, lunar analogue site"],
+  ["Haughton", ["NU"], "About 23 km, Devon Island, Mars analogue site"],
+  ["Tunnunik", ["NT"], "About 25 km, Victoria Island, confirmed 2012"],
+  ["Nicholson Lake", ["NT"], "About 12.5 km"],
+  ["Carswell", ["SK"], "About 39 km, uranium deposits"],
+  ["Deep Bay", ["SK"], "About 13 km, Reindeer Lake"],
+  ["Gow Lake", ["SK"], "About 4 km"],
+  ["Steen River", ["AB"], "About 25 km, buried"],
+  ["Eagle Butte", ["AB"], "About 10 km, buried"],
+  ["Whitecourt", ["AB"], "About 36 m, about 1,100 years old, iron meteorite fragments"],
+  ["Saint Martin", ["MB"], "About 40 km, partly buried"],
+  ["West Hawk Lake", ["MB"], "About 2.4 km, Whiteshell Provincial Park"],
+  ["Slate Islands", ["ON"], "About 30 km, islands in Lake Superior"],
+  ["Wanapitei Lake", ["ON"], "About 7.5 km, near Sudbury"],
+  ["Brent", ["ON"], "About 3.8 km, Algonquin Provincial Park"],
+  ["Holleford", ["ON"], "About 2.4 km, buried"],
+  ["Montagnais", ["NS"], "About 45 km, beneath the Scotian Shelf"]
+];
+
 const names = {
   BC: "British Columbia", AB: "Alberta", SK: "Saskatchewan", MB: "Manitoba",
   ON: "Ontario", QC: "Quebec", NB: "New Brunswick", NS: "Nova Scotia",
@@ -291,17 +349,47 @@ const names = {
   YT: "Yukon", NT: "Northwest Territories", NU: "Nunavut"
 };
 
-const typeLabel = { River: "River", Lake: "Lake", Water: "Ocean, sea, bay or strait", Mountain: "Mountain or range", Plain: "Plain or lowland" };
+const typeLabel = { River: "River", Lake: "Lake", Water: "Ocean, sea, bay or strait", Mountain: "Mountain or range", Plain: "Plain or lowland", Landform: "Landmark or landform", Impact: "Impact structure" };
 const all = [
   ...rivers.map(r => [...pad(r), "River"]),
   ...lakes.map(r => [...pad(r), "Lake"]),
   ...waters.map(r => [...pad(r), "Water"]),
   ...mountains.map(r => [...pad(r), "Mountain"]),
-  ...plains.map(r => [...pad(r), "Plain"])
+  ...plains.map(r => [...pad(r), "Plain"]),
+  ...landforms.map(r => [...pad(r), "Landform"]),
+  ...impacts.map(r => [...pad(r), "Impact"])
 ];
 function pad(r) { return [r[0], r[1], r[2] || ""]; }
 
-const kindNames = { River: "Rivers", Lake: "Lakes", Water: "Other bodies of water", Mountain: "Mountains", Plain: "Plains" };
+// Wikipedia links: opens the article when the query matches a title or redirect, otherwise search results
+const wikiOverride = {
+  "River|Churchill": "Churchill River (Hudson Bay)",
+  "River|Churchill (Labrador)": "Churchill River (Atlantic)",
+  "River|Red": "Red River of the North",
+  "River|St. Lawrence": "Saint Lawrence River",
+  "River|Saint John": "Saint John River (Bay of Fundy)",
+  "River|Moose": "Moose River (Ontario)",
+  "River|Back": "Back River (Nunavut)",
+  "Impact|Sudbury Basin": "Sudbury Basin",
+  "Impact|Clearwater Lakes": "Clearwater Lakes",
+  "Impact|Mistastin Lake": "Mistastin crater",
+  "Impact|Charlevoix": "Charlevoix impact structure",
+  "Impact|Steen River": "Steen River impact structure",
+  "Impact|Montagnais": "Montagnais impact structure",
+  "Landform|Okotoks Erratic (Big Rock)": "Okotoks Erratic",
+  "Landform|Writing-on-Stone (Áísínai'pi)": "Writing-on-Stone Provincial Park",
+  "Landform|Drumheller hoodoos": "Hoodoos (Drumheller)",
+  "Landform|Dinosaur Provincial Park badlands": "Dinosaur Provincial Park",
+  "Landform|Niagara Falls (Horseshoe Falls)": "Horseshoe Falls",
+  "Landform|Tablelands": "Tablelands (Newfoundland)"
+};
+function wikiUrl(name, k) {
+  let q = wikiOverride[k + "|" + name];
+  if (!q) q = k === "River" ? name + " River" : k === "Impact" ? name + " crater" : name;
+  return "https://en.wikipedia.org/wiki/Special:Search?go=Go&search=" + encodeURIComponent(q);
+}
+
+const kindNames = { River: "Rivers", Lake: "Lakes", Water: "Other bodies of water", Mountain: "Mountains", Plain: "Plains", Landform: "Landmarks and landforms", Impact: "Impact structures" };
 
 function makeChips(containerId, map) {
   const box = document.getElementById(containerId);
@@ -320,20 +408,22 @@ function checked(containerId) {
   return [...document.querySelectorAll(`#${containerId} input:checked`)].map(i => i.value);
 }
 
+
 function render() {
   const kinds = checked("kinds"), regs = checked("regions");
   const list = all.filter(r =>
     (!kinds.length || kinds.includes(r[3])) &&
     (!regs.length || r[1].some(c => regs.includes(c))));
-  document.getElementById("rows").innerHTML = list.length ? list.map(([name, regions, note, k]) => `
+  document.getElementById("rows").innerHTML = list.length ? list.map(([name, regions, note, k]) => {
+    return `
     <tr>
-      <td class="name">${name}</td>
+      <td class="name"><a href="${wikiUrl(name, k)}" target="_blank" rel="noopener noreferrer">${name}</a></td>
       <td class="kind">${typeLabel[k]}</td>
       <td>
         <div class="tags">${regions.map(c => `<span class="tag">${names[c]}</span>`).join("")}</div>
         ${note ? `<span class="note">${note}</span>` : ""}
       </td>
-    </tr>`).join("")
+    </tr>`; }).join("")
     : `<tr><td colspan="3">No entries match. Select other types or regions.</td></tr>`;
   document.getElementById("count").textContent = `${list.length} entr${list.length === 1 ? "y" : "ies"}`;
 }
@@ -342,7 +432,9 @@ document.getElementById("clear").addEventListener("click", () => {
   document.querySelectorAll(".chips input").forEach(i => { i.checked = false; });
   render();
 });
+
 render();
+
 </script>
 </body>
 </html>
