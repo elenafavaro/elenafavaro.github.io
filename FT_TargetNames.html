@@ -161,9 +161,6 @@ const firebaseConfig = {
 // Who may tick names is set only in the Firestore rules (editors() list).
 // ============================================
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 // Rivers: ["Name", ["CODE", ...], "Optional note"]
 const rivers = [
@@ -432,6 +429,50 @@ const impacts = [
   ["Montagnais", ["NS"], "About 45 km, beneath the Scotian Shelf"]
 ];
 
+// Historic sites: same format
+const historic = [
+  ["Head-Smashed-In Buffalo Jump", ["AB"], "Bison jump used for about 6,000 years, UNESCO World Heritage Site"],
+  ["Fort Whoop-Up", ["AB"], "Whisky trading post from 1869, Lethbridge"],
+  ["Frank Slide", ["AB"], "1903 rockslide from Turtle Mountain, Crowsnest Pass"],
+  ["Cave and Basin", ["AB"], "Hot springs where Banff National Park began in 1885"],
+  ["SGang Gwaay", ["BC"], "Haida village with standing totem poles, Haida Gwaii, UNESCO World Heritage Site"],
+  ["Battle Hill (Ta'awdzep)", ["BC"], "Gitxsan hilltop fort, Kitwanga"],
+  ["Fort Langley", ["BC"], "Hudson's Bay Company post from 1827, where the Colony of British Columbia was proclaimed in 1858"],
+  ["Chilkoot Trail", ["BC"], "Klondike Gold Rush route, 1897–98, continues into Alaska"],
+  ["Tr'ondëk-Klondike", ["YT"], "Gold rush and Tr'ondëk Hwëch'in sites, UNESCO World Heritage Site"],
+  ["SS Klondike", ["YT"], "Sternwheeler, Whitehorse"],
+  ["Saoyú-ʔehdacho", ["NT"], "Sahtu Dene cultural landscape, Great Bear Lake"],
+  ["Qaummaarviit", ["NU"], "Thule archaeological site near Iqaluit"],
+  ["Kekerten Island", ["NU"], "19th-century whaling station, Cumberland Sound"],
+  ["Wanuskewin", ["SK"], "Indigenous archaeological sites spanning about 6,000 years, near Saskatoon"],
+  ["Batoche", ["SK"], "Métis village, site of the 1885 battle"],
+  ["The Forks", ["MB"], "Meeting place at the Red and Assiniboine rivers, Winnipeg"],
+  ["Lower Fort Garry", ["MB"], "Stone Hudson's Bay Company fort from the 1830s"],
+  ["York Factory", ["MB"], "Hudson's Bay Company post from 1684, Hudson Bay coast"],
+  ["Prince of Wales Fort", ["MB"], "18th-century stone fort, Churchill"],
+  ["Pimachiowin Aki", ["MB", "ON"], "Anishinaabe cultural landscape, UNESCO World Heritage Site"],
+  ["Parliament Hill", ["ON"], "Seat of the federal government, Ottawa"],
+  ["Rideau Canal", ["ON"], "Opened in 1832, Ottawa to Kingston, UNESCO World Heritage Site"],
+  ["Fort Henry", ["ON"], "19th-century fortification, Kingston"],
+  ["Fort York", ["ON"], "Site of the 1813 Battle of York, Toronto"],
+  ["Sainte-Marie among the Hurons", ["ON"], "Reconstructed 17th-century Jesuit mission, Midland"],
+  ["Peterborough Petroglyphs (Kinomagewapkong)", ["ON"], "Indigenous rock carvings in crystalline limestone"],
+  ["Historic District of Old Québec", ["QC"], "Fortified colonial city, UNESCO World Heritage Site"],
+  ["Grosse Île", ["QC"], "Quarantine station 1832–1937, Irish Memorial"],
+  ["Fort Chambly", ["QC"], "French stone fort from 1711, Richelieu River"],
+  ["Fort Beauséjour", ["NB"], "French fort from 1751, Isthmus of Chignecto"],
+  ["Fortress of Louisbourg", ["NS"], "18th-century French fortified town, partly reconstructed, Cape Breton Island"],
+  ["Port-Royal", ["NS"], "Reconstructed 1605 French habitation, Annapolis Basin"],
+  ["Grand-Pré", ["NS"], "Acadian farmland and memorial, UNESCO World Heritage Site"],
+  ["Old Town Lunenburg", ["NS"], "British colonial town from 1753, UNESCO World Heritage Site"],
+  ["Kejimkujik petroglyphs", ["NS"], "Mi'kmaw rock carvings, Kejimkujik National Park"],
+  ["Province House", ["PE"], "Site of the 1864 Charlottetown Conference"],
+  ["L'Anse aux Meadows", ["NL"], "Norse settlement from about 1000 CE, UNESCO World Heritage Site"],
+  ["Red Bay", ["NL"], "16th-century Basque whaling station, Labrador, UNESCO World Heritage Site"],
+  ["Signal Hill", ["NL"], "Site of Marconi's 1901 transatlantic wireless signal, St. John's"],
+  ["Cape Spear Lighthouse", ["NL"], "1836 lighthouse, easternmost point of North America"]
+];
+
 const names = {
   BC: "British Columbia", AB: "Alberta", SK: "Saskatchewan", MB: "Manitoba",
   ON: "Ontario", QC: "Quebec", NB: "New Brunswick", NS: "Nova Scotia",
@@ -439,7 +480,7 @@ const names = {
   YT: "Yukon", NT: "Northwest Territories", NU: "Nunavut"
 };
 
-const typeLabel = { River: "River", Lake: "Lake", Water: "Ocean, sea, bay or strait", Mountain: "Mountain or range", Plain: "Plain or lowland", Landform: "Landmark or landform", Impact: "Impact structure" };
+const typeLabel = { River: "River", Lake: "Lake", Water: "Ocean, sea, bay or strait", Mountain: "Mountain or range", Plain: "Plain or lowland", Landform: "Landmark or landform", Impact: "Impact structure", Historic: "Historic site" };
 const all = [
   ...rivers.map(r => [...pad(r), "River"]),
   ...lakes.map(r => [...pad(r), "Lake"]),
@@ -447,7 +488,8 @@ const all = [
   ...mountains.map(r => [...pad(r), "Mountain"]),
   ...plains.map(r => [...pad(r), "Plain"]),
   ...landforms.map(r => [...pad(r), "Landform"]),
-  ...impacts.map(r => [...pad(r), "Impact"])
+  ...impacts.map(r => [...pad(r), "Impact"]),
+  ...historic.map(r => [...pad(r), "Historic"])
 ];
 function pad(r) { return [r[0], r[1], r[2] || ""]; }
 
@@ -475,7 +517,26 @@ const wikiOverride = {
   "Mountain|Three Sisters": "Three Sisters (Alberta)",
   "Mountain|Castle Mountain": "Castle Mountain (Alberta)",
   "Mountain|Cascade Mountain": "Cascade Mountain (Alberta)",
-  "Mountain|The Lions": "The Lions (peaks)"
+  "Mountain|The Lions": "The Lions (peaks)",
+  "Historic|SGang Gwaay": "SGang Gwaay Llnagaay",
+  "Historic|Battle Hill (Ta'awdzep)": "Kitwanga Fort National Historic Site",
+  "Historic|Fort Langley": "Fort Langley National Historic Site",
+  "Historic|Saoyú-ʔehdacho": "Saoyú-ʔehdacho National Historic Site",
+  "Historic|Qaummaarviit": "Qaummaarviit Territorial Park",
+  "Historic|Kekerten Island": "Kekerten Territorial Park",
+  "Historic|Wanuskewin": "Wanuskewin Heritage Park",
+  "Historic|Batoche": "Batoche National Historic Site",
+  "Historic|The Forks": "The Forks (Winnipeg)",
+  "Historic|Fort Henry": "Fort Henry, Ontario",
+  "Historic|Peterborough Petroglyphs (Kinomagewapkong)": "Petroglyphs Provincial Park",
+  "Historic|Grosse Île": "Grosse Île and the Irish Memorial National Historic Site",
+  "Historic|Port-Royal": "Port-Royal National Historic Site",
+  "Historic|Grand-Pré": "Landscape of Grand-Pré",
+  "Historic|Old Town Lunenburg": "Lunenburg, Nova Scotia",
+  "Historic|Kejimkujik petroglyphs": "Kejimkujik National Park",
+  "Historic|Province House": "Province House (Prince Edward Island)",
+  "Historic|Red Bay": "Red Bay Basque Whaling Station",
+  "Historic|Signal Hill": "Signal Hill, St. John's"
 };
 function wikiUrl(name, k) {
   let q = wikiOverride[k + "|" + name];
@@ -483,7 +544,7 @@ function wikiUrl(name, k) {
   return "https://en.wikipedia.org/wiki/Special:Search?go=Go&search=" + encodeURIComponent(q);
 }
 
-const kindNames = { River: "Rivers", Lake: "Lakes", Water: "Other bodies of water", Mountain: "Mountains", Plain: "Plains", Landform: "Landmarks and landforms", Impact: "Impact structures" };
+const kindNames = { River: "Rivers", Lake: "Lakes", Water: "Other bodies of water", Mountain: "Mountains", Plain: "Plains", Landform: "Landmarks and landforms", Impact: "Impact structures", Historic: "Historic sites" };
 
 function makeChips(containerId, map) {
   const box = document.getElementById(containerId);
@@ -534,102 +595,117 @@ document.getElementById("clear").addEventListener("click", () => {
   document.querySelectorAll(".chips input").forEach(i => { i.checked = false; });
   render();
 });
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const usedCol = collection(db, "used");
-const sync = document.getElementById("sync");
-const who = document.getElementById("who");
-const $ = id => document.getElementById(id);
-const emailIn = $("email"), pwIn = $("password");
-let user = null, unsub = null;
-
-const messages = {
-  "auth/invalid-credential": "Wrong email or password.",
-  "auth/wrong-password": "Wrong email or password.",
-  "auth/user-not-found": "No account with this email. Use Create account first.",
-  "auth/email-already-in-use": "An account with this email already exists. Use Sign in.",
-  "auth/weak-password": "Password must be at least 6 characters.",
-  "auth/invalid-email": "Enter a valid email address.",
-  "auth/missing-password": "Enter a password.",
-  "auth/too-many-requests": "Too many attempts. Wait a few minutes and try again.",
-  "auth/popup-closed-by-user": "Sign-in window closed before finishing."
-};
-const say = err => { sync.textContent = messages[err.code] || ("Error: " + err.code); };
-const email = () => emailIn.value.trim().toLowerCase();
-const backUrl = () => ({ url: location.href.split(/[?#]/)[0] });
-
-$("signedOut").addEventListener("submit", async e => {
-  e.preventDefault();
-  try { await signInWithEmailAndPassword(auth, email(), pwIn.value); } catch (err) { say(err); }
-});
-$("createAcct").addEventListener("click", async () => {
-  try {
-    const cred = await createUserWithEmailAndPassword(auth, email(), pwIn.value);
-    await sendEmailVerification(cred.user, backUrl());
-  } catch (err) { say(err); }
-});
-$("resetPw").addEventListener("click", async () => {
-  if (!email()) { sync.textContent = "Enter your email address first, then click Forgot password."; return; }
-  try {
-    await sendPasswordResetEmail(auth, email(), backUrl());
-    sync.textContent = "If an account exists for " + email() + ", a password reset email is on its way. Check the spam folder too.";
-  } catch (err) { say(err); }
-});
-$("signinGoogle").addEventListener("click", async () => {
-  try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch (err) { say(err); }
-});
-$("signout").addEventListener("click", () => signOut(auth));
-$("resendVerify").addEventListener("click", async () => {
-  try { await sendEmailVerification(user, backUrl()); sync.textContent = "Verification email sent to " + user.email + ". Check the spam folder too."; }
-  catch (err) { say(err); }
-});
-$("checkVerify").addEventListener("click", async () => {
-  await user.reload();
-  await user.getIdToken(true);
-  setUser(auth.currentUser);
-});
-
-function setUser(u) {
-  user = u;
-  if (unsub) { unsub(); unsub = null; }
-  usedIds = new Set();
-  const verified = !!u && u.emailVerified;
-  canEdit = verified;
-  $("signedOut").hidden = !!u;
-  $("signedIn").hidden = !u;
-  $("checkVerify").hidden = $("resendVerify").hidden = !u || verified;
-  who.textContent = u ? u.email : "";
-  if (u) pwIn.value = "";
-  if (!u) { sync.textContent = "Sign in to see and mark used names. New users: enter your email and a password, then click Create account."; render(); return; }
-  if (!verified) {
-    sync.textContent = "Verify your email: open the link sent to " + u.email + " (check spam too), then click \"I have verified my email\".";
-    render(); return;
-  }
-  sync.textContent = "Connecting to shared list…";
-  unsub = onSnapshot(usedCol, snap => {
-    usedIds = new Set(snap.docs.map(d => d.id));
-    sync.textContent = "Shared list: changes are saved for everyone.";
-    render();
-  }, err => { sync.textContent = "Could not load the shared list (" + err.code + ")."; });
-  render();
+// Draw the list first, then load Firebase. If Firebase is blocked (for example in a
+// sandboxed preview), the list still shows; only sign-in and ticks are unavailable.
+render();
+const FB = "https://www.gstatic.com/firebasejs/10.14.1/";
+try {
+  const mods = await Promise.all(["firebase-app.js", "firebase-auth.js", "firebase-firestore.js"].map(f => import(FB + f)));
+  startFirebase(Object.assign({}, ...mods));
+} catch (err) {
+  console.error(err);
+  document.getElementById("sync").textContent = "Could not load Firebase, so sign-in and the Used column are unavailable here. The list still works.";
 }
-onAuthStateChanged(auth, setUser);
 
-document.getElementById("rows").addEventListener("change", async e => {
-  const box = e.target;
-  if (!box.matches("input[data-id]") || !canEdit) return;
-  const ref = doc(db, "used", box.dataset.id);
-  box.disabled = true;
-  try {
-    if (box.checked) await setDoc(ref, { used: true, at: serverTimestamp(), by: user.email });
-    else await deleteDoc(ref);
-  } catch (err) {
-    box.checked = !box.checked;
-    sync.textContent = err.code === "permission-denied" ? "Could not save that change: this account is not on the editor list." : "Could not save that change (" + err.code + ").";
-  } finally { box.disabled = false; }
-});
+function startFirebase(F) {
+  const { initializeApp, getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp } = F;
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const usedCol = collection(db, "used");
+  const sync = document.getElementById("sync");
+  const who = document.getElementById("who");
+  const $ = id => document.getElementById(id);
+  const emailIn = $("email"), pwIn = $("password");
+  let user = null, unsub = null;
 
+  const messages = {
+    "auth/invalid-credential": "Wrong email or password.",
+    "auth/wrong-password": "Wrong email or password.",
+    "auth/user-not-found": "No account with this email. Use Create account first.",
+    "auth/email-already-in-use": "An account with this email already exists. Use Sign in.",
+    "auth/weak-password": "Password must be at least 6 characters.",
+    "auth/invalid-email": "Enter a valid email address.",
+    "auth/missing-password": "Enter a password.",
+    "auth/too-many-requests": "Too many attempts. Wait a few minutes and try again.",
+    "auth/popup-closed-by-user": "Sign-in window closed before finishing."
+  };
+  const say = err => { sync.textContent = messages[err.code] || ("Error: " + err.code); };
+  const email = () => emailIn.value.trim().toLowerCase();
+  const backUrl = () => ({ url: location.href.split(/[?#]/)[0] });
+
+  $("signedOut").addEventListener("submit", async e => {
+    e.preventDefault();
+    try { await signInWithEmailAndPassword(auth, email(), pwIn.value); } catch (err) { say(err); }
+  });
+  $("createAcct").addEventListener("click", async () => {
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email(), pwIn.value);
+      await sendEmailVerification(cred.user, backUrl());
+    } catch (err) { say(err); }
+  });
+  $("resetPw").addEventListener("click", async () => {
+    if (!email()) { sync.textContent = "Enter your email address first, then click Forgot password."; return; }
+    try {
+      await sendPasswordResetEmail(auth, email(), backUrl());
+      sync.textContent = "If an account exists for " + email() + ", a password reset email is on its way. Check the spam folder too.";
+    } catch (err) { say(err); }
+  });
+  $("signinGoogle").addEventListener("click", async () => {
+    try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch (err) { say(err); }
+  });
+  $("signout").addEventListener("click", () => signOut(auth));
+  $("resendVerify").addEventListener("click", async () => {
+    try { await sendEmailVerification(user, backUrl()); sync.textContent = "Verification email sent to " + user.email + ". Check the spam folder too."; }
+    catch (err) { say(err); }
+  });
+  $("checkVerify").addEventListener("click", async () => {
+    await user.reload();
+    await user.getIdToken(true);
+    setUser(auth.currentUser);
+  });
+
+  function setUser(u) {
+    user = u;
+    if (unsub) { unsub(); unsub = null; }
+    usedIds = new Set();
+    const verified = !!u && u.emailVerified;
+    canEdit = verified;
+    $("signedOut").hidden = !!u;
+    $("signedIn").hidden = !u;
+    $("checkVerify").hidden = $("resendVerify").hidden = !u || verified;
+    who.textContent = u ? u.email : "";
+    if (u) pwIn.value = "";
+    if (!u) { sync.textContent = "Sign in to see and mark used names. New users: enter your email and a password, then click Create account."; render(); return; }
+    if (!verified) {
+      sync.textContent = "Verify your email: open the link sent to " + u.email + " (check spam too), then click \"I have verified my email\".";
+      render(); return;
+    }
+    sync.textContent = "Connecting to shared list…";
+    unsub = onSnapshot(usedCol, snap => {
+      usedIds = new Set(snap.docs.map(d => d.id));
+      sync.textContent = "Shared list: changes are saved for everyone.";
+      render();
+    }, err => { sync.textContent = "Could not load the shared list (" + err.code + ")."; });
+    render();
+  }
+  onAuthStateChanged(auth, setUser);
+
+  document.getElementById("rows").addEventListener("change", async e => {
+    const box = e.target;
+    if (!box.matches("input[data-id]") || !canEdit) return;
+    const ref = doc(db, "used", box.dataset.id);
+    box.disabled = true;
+    try {
+      if (box.checked) await setDoc(ref, { used: true, at: serverTimestamp(), by: user.email });
+      else await deleteDoc(ref);
+    } catch (err) {
+      box.checked = !box.checked;
+      sync.textContent = err.code === "permission-denied" ? "Could not save that change: this account is not on the editor list." : "Could not save that change (" + err.code + ").";
+    } finally { box.disabled = false; }
+  });
+
+}
 render();
 </script>
 </body>
