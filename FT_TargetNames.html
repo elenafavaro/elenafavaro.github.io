@@ -300,6 +300,25 @@ const mountains = [
   ["Gros Morne", ["NL"], "807 m"],
   ["Ishpatina Ridge", ["ON"], "693 m, highest in Ontario"],
   ["White Hill", ["NS"], "532 m, highest in Nova Scotia, Cape Breton Island"],
+  ["Three Sisters", ["AB"], "Three peaks above Canmore, Big Sister 2,936 m"],
+  ["Mount Rundle", ["AB"], "2,949 m, Banff"],
+  ["Cascade Mountain", ["AB"], "2,998 m, Banff"],
+  ["Castle Mountain", ["AB"], "2,766 m, Banff National Park"],
+  ["Mount Yamnuska", ["AB"], "About 2,240 m, Bow Valley"],
+  ["Ha Ling Peak", ["AB"], "2,407 m, Canmore"],
+  ["Mount Alberta", ["AB"], "3,619 m, Jasper National Park"],
+  ["Chief Mountain", ["AB"], "2,768 m, summit in Montana, just south of the Alberta border"],
+  ["Mount Sir Donald", ["BC"], "3,284 m, Selkirk Mountains"],
+  ["Mount Sir Sandford", ["BC"], "3,519 m, highest in the Selkirk Mountains"],
+  ["The Lions", ["BC"], "Twin peaks north of Vancouver"],
+  ["Black Tusk", ["BC"], "2,319 m, volcanic peak, Garibaldi Provincial Park"],
+  ["Mount Edziza", ["BC"], "2,786 m, volcano, northwestern British Columbia"],
+  ["Mount Vancouver", ["YT"], "4,812 m, on the border with Alaska"],
+  ["Mount Hubbard", ["YT"], "4,557 m, on the border with Alaska"],
+  ["Cirque of the Unclimbables", ["NT"], "Granite spires, Nahanni National Park Reserve"],
+  ["Mount Asgard", ["NU"], "2,015 m, twin towers, Auyuittuq National Park"],
+  ["Mont Royal", ["QC"], "233 m, Montreal"],
+  ["Mont Albert", ["QC"], "1,154 m, Chic-Choc Mountains, Gaspésie National Park"],
   ["Rocky Mountains", ["BC", "AB"], "Range, continues into the United States"],
   ["Coast Mountains", ["BC", "YT"], "Range, continues into Alaska"],
   ["Saint Elias Mountains", ["YT", "BC"], "Range, contains Canada's highest peaks"],
@@ -314,7 +333,17 @@ const mountains = [
   ["Chic-Choc Mountains", ["QC"], "Range, Gaspé Peninsula"],
   ["Appalachian Mountains", ["QC", "NB", "NS", "NL"], "Range, continues into the United States"],
   ["Long Range Mountains", ["NL"], "Range, western Newfoundland"],
-  ["Cypress Hills", ["AB", "SK"], "Upland, about 1,392 m in Saskatchewan, highest point in the province"]
+  ["Cypress Hills", ["AB", "SK"], "Upland, about 1,392 m in Saskatchewan, highest point in the province"],
+  ["Purcell Mountains", ["BC"], "Subrange of the Columbia Mountains"],
+  ["Selkirk Mountains", ["BC"], "Subrange of the Columbia Mountains"],
+  ["Monashee Mountains", ["BC"], "Subrange of the Columbia Mountains"],
+  ["Tombstone Mountains", ["YT"], "Tombstone Territorial Park"],
+  ["Ogilvie Mountains", ["YT"]],
+  ["Monteregian Hills", ["QC"], "Isolated hills east of Montreal, including Mont Royal"],
+  ["Cape Breton Highlands", ["NS"], "Plateau, Cape Breton Island"],
+  ["Mealy Mountains", ["NL"], "Labrador"],
+  ["Kaumajet Mountains", ["NL"], "Northern Labrador coast"],
+  ["Caledonia Highlands", ["NB"], "Near the Bay of Fundy, Fundy National Park"]
 ];
 
 // Plains and lowlands: same format
@@ -371,6 +400,7 @@ const landforms = [
   ["Greenwich Dunes", ["PE"], "Parabolic dune system, Prince Edward Island National Park"],
   ["Balancing Rock", ["NS"], "Basalt column on a narrow base, Digby Neck"],
   ["Sable Island", ["NS"], "Sand island on the Scotian Shelf"],
+  ["Stawamus Chief", ["BC"], "Granite dome, 702 m, Squamish"],
   ["Tablelands", ["NL"], "Exposed Earth mantle peridotite, Gros Morne National Park"],
   ["Western Brook Pond", ["NL"], "Landlocked fjord, Gros Morne National Park"]
 ];
@@ -441,7 +471,11 @@ const wikiOverride = {
   "Landform|Drumheller hoodoos": "Hoodoos (Drumheller)",
   "Landform|Dinosaur Provincial Park badlands": "Dinosaur Provincial Park",
   "Landform|Niagara Falls (Horseshoe Falls)": "Horseshoe Falls",
-  "Landform|Tablelands": "Tablelands (Newfoundland)"
+  "Landform|Tablelands": "Tablelands (Newfoundland)",
+  "Mountain|Three Sisters": "Three Sisters (Alberta)",
+  "Mountain|Castle Mountain": "Castle Mountain (Alberta)",
+  "Mountain|Cascade Mountain": "Cascade Mountain (Alberta)",
+  "Mountain|The Lions": "The Lions (peaks)"
 };
 function wikiUrl(name, k) {
   let q = wikiOverride[k + "|" + name];
