@@ -120,11 +120,11 @@ main { padding-top: 2rem; }
 <body>
 <figure class="banner">
   <img src="banner.jpg" alt="Peyto Lake from the viewpoint above, with forested valley and snow-capped peaks" width="2400" height="574">
-  <figcaption>Peyto Lake, Banff National Park (Photo Credit: E. Favaro)</figcaption>
+  <figcaption>Peyto Lake, Banff National Park, Alberta. (Photo Credit: E. Favaro)</figcaption>
 </figure>
 <main>
-  <h1>Canadian Target Names for SKP Field Trial One</h1>
-  <p class="intro">Major Canadian geographic features, with the provinces and territories each is in or borders. Filter by type and region; an empty group shows all..</p>
+  <h1>Canadian Target Names<br>for SKP Field Trial One</h1>
+  <p class="intro">Major Canadian geographic features by type, with the provinces and territories each is in or borders. Filter by type and region; an empty group shows all.</p>
 
   <div class="controls">
     <fieldset class="filter">
@@ -496,6 +496,68 @@ const historic = [
   ["Cape Spear Lighthouse", ["NL"], "1836 lighthouse, easternmost point of North America"]
 ];
 
+// Cities and towns: same format
+const cities = [
+  ["Vancouver", ["BC"]],
+  ["Victoria", ["BC"], "Provincial capital, Vancouver Island"],
+  ["Kelowna", ["BC"], "Okanagan Lake"],
+  ["Kamloops", ["BC"]],
+  ["Prince George", ["BC"]],
+  ["Nanaimo", ["BC"], "Vancouver Island"],
+  ["Prince Rupert", ["BC"], "Port, north coast"],
+  ["Edmonton", ["AB"], "Provincial capital"],
+  ["Calgary", ["AB"]],
+  ["Red Deer", ["AB"]],
+  ["Lethbridge", ["AB"]],
+  ["Medicine Hat", ["AB"]],
+  ["Grande Prairie", ["AB"], "Peace River Country"],
+  ["Fort McMurray", ["AB"], "Urban service area, Regional Municipality of Wood Buffalo"],
+  ["Regina", ["SK"], "Provincial capital"],
+  ["Saskatoon", ["SK"]],
+  ["Prince Albert", ["SK"]],
+  ["Moose Jaw", ["SK"]],
+  ["Winnipeg", ["MB"], "Provincial capital"],
+  ["Brandon", ["MB"]],
+  ["Thompson", ["MB"], "Northern Manitoba"],
+  ["Churchill", ["MB"], "Town, Hudson Bay coast"],
+  ["Toronto", ["ON"], "Provincial capital"],
+  ["Ottawa", ["ON"], "Capital of Canada"],
+  ["Hamilton", ["ON"]],
+  ["London", ["ON"]],
+  ["Kingston", ["ON"]],
+  ["Windsor", ["ON"]],
+  ["Sudbury", ["ON"], "City of Greater Sudbury"],
+  ["Thunder Bay", ["ON"], "Lake Superior"],
+  ["Sault Ste. Marie", ["ON"]],
+  ["Quebec City", ["QC"], "Provincial capital"],
+  ["Montreal", ["QC"]],
+  ["Gatineau", ["QC"], "Across the Ottawa River from Ottawa"],
+  ["Sherbrooke", ["QC"]],
+  ["Trois-Rivières", ["QC"]],
+  ["Saguenay", ["QC"], "Includes Chicoutimi"],
+  ["Rimouski", ["QC"]],
+  ["Fredericton", ["NB"], "Provincial capital"],
+  ["Saint John", ["NB"]],
+  ["Moncton", ["NB"]],
+  ["Halifax", ["NS"], "Provincial capital"],
+  ["Sydney", ["NS"], "Cape Breton Regional Municipality"],
+  ["Truro", ["NS"], "Town"],
+  ["Charlottetown", ["PE"], "Provincial capital"],
+  ["Summerside", ["PE"]],
+  ["St. John's", ["NL"], "Provincial capital"],
+  ["Corner Brook", ["NL"], "Island of Newfoundland"],
+  ["Gander", ["NL"], "Town, island of Newfoundland"],
+  ["Happy Valley-Goose Bay", ["NL"], "Town, Labrador"],
+  ["Whitehorse", ["YT"], "Territorial capital"],
+  ["Dawson City", ["YT"], "Town, Klondike"],
+  ["Yellowknife", ["NT"], "Territorial capital"],
+  ["Inuvik", ["NT"], "Town, Mackenzie Delta"],
+  ["Hay River", ["NT"], "Town, south shore of Great Slave Lake"],
+  ["Iqaluit", ["NU"], "Territorial capital, Baffin Island"],
+  ["Rankin Inlet", ["NU"], "Hamlet, Hudson Bay coast"],
+  ["Cambridge Bay", ["NU"], "Hamlet, Victoria Island"]
+];
+
 const names = {
   BC: "British Columbia", AB: "Alberta", SK: "Saskatchewan", MB: "Manitoba",
   ON: "Ontario", QC: "Quebec", NB: "New Brunswick", NS: "Nova Scotia",
@@ -503,7 +565,7 @@ const names = {
   YT: "Yukon", NT: "Northwest Territories", NU: "Nunavut"
 };
 
-const typeLabel = { River: "River", Lake: "Lake", Water: "Ocean, sea, bay or strait", Mountain: "Mountain or range", Plain: "Plain or lowland", Landform: "Landmark or landform", Impact: "Impact structure", Historic: "Historic site" };
+const typeLabel = { River: "River", Lake: "Lake", Water: "Ocean, sea, bay or strait", Mountain: "Mountain or range", Plain: "Plain or lowland", Landform: "Landmark or landform", Impact: "Impact structure", Historic: "Historic site", City: "City or town" };
 const all = [
   ...rivers.map(r => [...pad(r), "River"]),
   ...lakes.map(r => [...pad(r), "Lake"]),
@@ -512,7 +574,8 @@ const all = [
   ...plains.map(r => [...pad(r), "Plain"]),
   ...landforms.map(r => [...pad(r), "Landform"]),
   ...impacts.map(r => [...pad(r), "Impact"]),
-  ...historic.map(r => [...pad(r), "Historic"])
+  ...historic.map(r => [...pad(r), "Historic"]),
+  ...cities.map(r => [...pad(r), "City"])
 ];
 function pad(r) { return [r[0], r[1], r[2] || ""]; }
 
@@ -559,7 +622,32 @@ const wikiOverride = {
   "Historic|Kejimkujik petroglyphs": "Kejimkujik National Park",
   "Historic|Province House": "Province House (Prince Edward Island)",
   "Historic|Red Bay": "Red Bay Basque Whaling Station",
-  "Historic|Signal Hill": "Signal Hill, St. John's"
+  "Historic|Signal Hill": "Signal Hill, St. John's",
+  "City|Victoria": "Victoria, British Columbia",
+  "City|Prince George": "Prince George, British Columbia",
+  "City|Prince Rupert": "Prince Rupert, British Columbia",
+  "City|Red Deer": "Red Deer, Alberta",
+  "City|Regina": "Regina, Saskatchewan",
+  "City|Prince Albert": "Prince Albert, Saskatchewan",
+  "City|Brandon": "Brandon, Manitoba",
+  "City|Thompson": "Thompson, Manitoba",
+  "City|Churchill": "Churchill, Manitoba",
+  "City|Hamilton": "Hamilton, Ontario",
+  "City|London": "London, Ontario",
+  "City|Kingston": "Kingston, Ontario",
+  "City|Windsor": "Windsor, Ontario",
+  "City|Sudbury": "Greater Sudbury",
+  "City|Sault Ste. Marie": "Sault Ste. Marie, Ontario",
+  "City|Sherbrooke": "Sherbrooke, Quebec",
+  "City|Saguenay": "Saguenay, Quebec",
+  "City|Saint John": "Saint John, New Brunswick",
+  "City|Halifax": "Halifax, Nova Scotia",
+  "City|Sydney": "Sydney, Nova Scotia",
+  "City|Truro": "Truro, Nova Scotia",
+  "City|Summerside": "Summerside, Prince Edward Island",
+  "City|St. John's": "St. John's, Newfoundland and Labrador",
+  "City|Gander": "Gander, Newfoundland and Labrador",
+  "City|Hay River": "Hay River, Northwest Territories"
 };
 function wikiUrl(name, k) {
   let q = wikiOverride[k + "|" + name];
@@ -567,7 +655,7 @@ function wikiUrl(name, k) {
   return "https://en.wikipedia.org/wiki/Special:Search?go=Go&search=" + encodeURIComponent(q);
 }
 
-const kindNames = { River: "Rivers", Lake: "Lakes", Water: "Other bodies of water", Mountain: "Mountains", Plain: "Plains", Landform: "Landmarks and landforms", Impact: "Impact structures", Historic: "Historic sites" };
+const kindNames = { River: "Rivers", Lake: "Lakes", Water: "Other bodies of water", Mountain: "Mountains", Plain: "Plains", Landform: "Landmarks and landforms", Impact: "Impact structures", Historic: "Historic sites", City: "Cities and towns" };
 
 function makeChips(containerId, map) {
   const box = document.getElementById(containerId);
