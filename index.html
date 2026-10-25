@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Elena Favaro | Research Fellow at ESA</title>
-  <meta name="description" content="Academic homepage of Elena Favaro, Research Fellow at the European Space Agency.">
+  <title>Elena Favaro | Lecturer in Planetary Science, The Open University</title>
+  <meta name="description" content="Academic homepage of Elena Favaro, Lecturer in Planetary Science at The Open University.">
   <meta name="author" content="Elena Favaro">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#fafafa">
 
-  <meta property="og:title" content="Elena Favaro | Research Fellow at ESA">
+  <meta property="og:title" content="Elena Favaro | Lecturer in Planetary Science, The Open University">
   <meta property="og:description" content="Planetary science, remote sensing, and space exploration research.">
   <meta property="og:type" content="profile">
   <meta property="og:url" content="">
@@ -123,14 +123,14 @@
       top: 4.5rem;            /* clears the sticky header */
     }
     .profile-photo {
-      width: 150px; height: 150px;
+      display: block;
+      width: 14rem; height: 14rem;   /* 224px; source image is 672px for sharp high-DPI display */
+      aspect-ratio: 1;
       border-radius: 50%;
       object-fit: cover;
       border: 3px solid var(--clr-border);
       flex-shrink: 0;
       background: var(--clr-surface);
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden;
     }
     .profile-photo-placeholder {
       width: 150px; height: 150px;
@@ -454,6 +454,7 @@
       .cursor-instrument { justify-content: center; }
       .themes { grid-template-columns: 1fr; }
       .cv-item { grid-template-columns: 1fr; gap: 0.1rem; }
+      .profile-photo { width: 12rem; height: 12rem; }
       footer { flex-direction: column; }
     }
 
@@ -493,7 +494,7 @@
 
   <!-- Profile -->
   <div class="profile fade-in">
-    <img class="profile-photo" src="profilepic.jpg" alt="Portrait of Elena Favaro">
+    <img class="profile-photo" src="profilepic.webp" width="224" height="224" alt="Portrait of Elena Favaro">
     <div class="profile-info">
       <h1>Elena Favaro</h1>
       <div class="profile-role">Planetary Scientist</div>
@@ -502,10 +503,10 @@
         Planetary surface processes <span>&middot;</span> Remote sensing <span>&middot;</span> ExoMars Rosalind Franklin Rover Mission <span>&middot;</span> 3D image analysis and digital elevation model creation 
       </div>
 
-      <div class="profile-institution">European Space Agency</div>
+      <div class="profile-institution">The Open University</div>
       <div class="profile-meta">
         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        ESTEC, Noordwijk, Netherlands
+        Milton Keynes, UK
       </div>
 
       <div class="profile-links">
@@ -525,7 +526,7 @@
   <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
   LinkedIn
 </a>
-        <a href="Favaro_Elena_PublicCV_June2026.pdf" title="Download CV (PDF)">
+        <a href="Favaro_Elena_NovPublicCV.pdf" title="Download CV (PDF)">
           <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Academic CV
         </a>     
@@ -563,7 +564,7 @@
   <section class="section fade-in">
     <h2>About</h2>
     <p class="about-text">
-      I am a Research Fellow at the European Space Agency. My research interests lie at the intersection of geology, geomorphology, and atmospheric sciences. At its core, I seek to answer questions relating to the dynamic interplay of processes and mechanisms responsible for the surficial expression of arid environments on Earth and Mars. I use the expresion of landforms (like yardangs and periodic bedrock ridges) and bedforms (like megaripples, dunes, transverse aeolian ridges, dust devils, and wind streaks) in remote areas of Earth and Mars to piece together the complex climatic history that has shaped the landscape, either contemporaneously or at some point in the past. 
+      I am a Lecturer in Planetary Science at the Open University. My research interests lie at the intersection of geology, geomorphology, and atmospheric sciences. At its core, I seek to answer questions relating to the dynamic interplay of processes and mechanisms responsible for the surficial expression of arid environments on Earth and Mars. I use the expression of landforms (like yardangs and periodic bedrock ridges) and bedforms (like megaripples, dunes, transverse aeolian ridges, dust devils, and wind streaks) in remote areas of Earth and Mars to piece together the complex climatic history that has shaped the landscape, either contemporaneously or at some point in the past. 
       <!-- Expand this with your actual research summary -->
     </p>
 <!--
@@ -593,7 +594,7 @@ Mars: Evidence for widespread aeolian erosion of an ancient surface by regional
 palaeowinds.</a></div>
         <div class="pub-authors">Favaro, E.A., Balme, M.R., Davis, J.M., Grindrod, P.M., Fawdon, P., McNeil, J.D., &
 Lewis, S.R.</div>
-        <div class="pub-journal">Earth and Planetary Science Letters, 626, 118522. &middot; 2025</div>
+        <div class="pub-journal">Earth and Planetary Science Letters, 626, 118522. &middot; 2024</div>
         <button class="pub-summary-toggle" aria-expanded="false" onclick="toggleSummary(this)">
           <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
           Summary
@@ -686,11 +687,18 @@ Mountains of Northwestern Argentina.</a></div>
   <section class="section fade-in" id="cv">
     <h2>Brief CV</h2>
     <p class="cv-download">
-      <a href="Favaro_Elena_PublicCV_June2026.pdf">View full academic CV (PDF) &rarr;</a>
+      <a href="Favaro_Elena_NovPublicCV.pdf">View full academic CV (PDF) &rarr;</a>
     </p>
     <ul class="cv-list">
       <li class="cv-item">
-        <div class="cv-year">2024 – Present</div>
+        <div class="cv-year">2026 – Present</div>
+        <div class="cv-desc">
+          <strong>The Open University</strong>
+          <span>Lecturer, Planetary Science / Milton Keynes, UK.</span>
+        </div>
+      </li>
+      <li class="cv-item">
+        <div class="cv-year">2024 – 2026</div>
         <div class="cv-desc">
           <strong>European Space Agency</strong>
           <span>Research Fellow / Noordwijk, Netherlands.</span>
@@ -721,9 +729,9 @@ Mountains of Northwestern Argentina.</a></div>
 <footer>
   <div class="footer-links">
     <h4>Profiles</h4>
-    <a href="#">ORCID</a>
-    <a href="#">Google Scholar</a>
-    <a href="#">GitHub</a>
+    <a href="https://orcid.org/0000-0001-6126-5465">ORCID</a>
+    <a href="https://scholar.google.com/citations?user=4CNGDTEAAAAJ&hl=en">Google Scholar</a>
+    <a href="https://github.com/elenafavaro">GitHub</a>
   </div>
   <div class="footer-links">
     <h4>Pages</h4>
@@ -733,7 +741,7 @@ Mountains of Northwestern Argentina.</a></div>
   </div>
   <div class="footer-links">
     <h4>Documents</h4>
-    <a href="Favaro_Elena_PublicCV_June2026.pdf">Academic CV</a>
+    <a href="Favaro_Elena_NovPublicCV.pdf">Academic CV</a>
     <!-- Teaching dossier intentionally NOT linked here. Hosted in the repo
          and shared by direct URL only:
          https://elenafavaro.github.io/Favaro_Elena_TeachingDossier_Public.pdf -->
