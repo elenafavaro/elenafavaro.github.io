@@ -821,6 +821,7 @@
   /* Publications. Fields:
        year, title, authors (array, in order), journal, doi ("" if none),
        ads and arxiv (optional full URLs; leave "" if none),
+       url (optional; article page used when there is no DOI),
        topics (theme ids from THEMES), summary (optional; "" hides the toggle)
      Papers in the same year appear in the order listed here. */
   const PUBS = [
@@ -967,6 +968,16 @@
       doi: "10.1002/2014GL060677", ads: "", arxiv: "",
       topics: ["arctic"],
       summary: ""
+    },
+    {
+      year: 2008,
+      title: "Period changes in pulsating red supergiant stars: a science and education project",
+      authors: ["Percy, J. R.", "Favaro, E.", "Glasheen, J.", "Ho, B.", "Sato, H."],
+      journal: "Journal of the American Association of Variable Star Observers (JAAVSO), 36(2), 145",
+      doi: "", ads: "", arxiv: "",
+      url: "https://www.aavso.org/node/73816",
+      topics: [],
+      summary: ""
     }
   ];
 
@@ -997,9 +1008,11 @@
       const links = [
         p.ads   ? '<a class="pub-link" href="' + p.ads + '" ' + ext + '>ADS</a>' : "",
         p.arxiv ? '<a class="pub-link" href="' + p.arxiv + '" ' + ext + '>arXiv</a>' : "",
-        p.doi   ? '<a class="pub-link" href="https://doi.org/' + p.doi + '" ' + ext + '>DOI</a>' : ""
+        p.doi   ? '<a class="pub-link" href="https://doi.org/' + p.doi + '" ' + ext + '>DOI</a>' : "",
+        p.url && !p.doi ? '<a class="pub-link" href="' + p.url + '" ' + ext + '>Article</a>' : ""
       ].join("");
-      const title = p.doi ? '<a href="https://doi.org/' + p.doi + '" ' + ext + '>' + p.title + '</a>' : p.title;
+      const href = p.doi ? "https://doi.org/" + p.doi : (p.url || "");
+      const title = href ? '<a href="' + href + '" ' + ext + '>' + p.title + '</a>' : p.title;
       const summary = p.summary
         ? '<button class="pub-summary-toggle" aria-expanded="false" onclick="toggleSummary(this)">' +
           '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>Summary</button>' +
