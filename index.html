@@ -435,6 +435,97 @@
     }
     .footer-links a:hover { color: var(--clr-accent); }
 
+    /* ── Research interests: highlighter label + description rows ── */
+    .interests { list-style: none; display: grid; gap: 1.1rem; }
+    .interest {
+      display: grid;
+      grid-template-columns: 11.5rem 1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+    .hl {
+      justify-self: start;
+      font-family: inherit; font-size: 0.8rem; font-weight: 600; line-height: 1.35;
+      text-align: left;
+      color: #1f1d1a;
+      background: var(--hl);
+      padding: 0.2rem 0.55rem;
+      border: none; border-radius: 2px;
+      cursor: pointer;
+    }
+    .interest .hl:hover,
+    .interest .hl:focus-visible { outline: 2px solid var(--clr-text); outline-offset: 2px; }
+    .interest p { font-size: 0.9rem; color: var(--clr-text-mid); margin: 0; }
+
+    /* ── Publication toolbar ── */
+    .pub-toolbar {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.75rem; margin-bottom: 0.75rem;
+    }
+    .seg { display: inline-flex; border: 1px solid var(--clr-text); border-radius: 3px; overflow: hidden; }
+    .seg button {
+      font-family: inherit; font-size: 0.78rem; font-weight: 600;
+      padding: 0.25rem 0.7rem;
+      border: none; background: none; color: var(--clr-text);
+      cursor: pointer;
+    }
+    .seg button + button { border-left: 1px solid var(--clr-text); }
+    .seg button[aria-pressed="true"] { background: var(--clr-text); color: var(--clr-bg); }
+    .seg button:focus-visible { outline: 2px solid var(--clr-accent); outline-offset: -2px; }
+    .pub-count { margin-left: auto; font-size: 0.78rem; color: var(--clr-text-soft); }
+
+    /* ── Scrollable publication box ── */
+    .pub-box {
+      position: relative;
+      max-height: 36rem;
+      overflow-y: auto;
+      border: 1px solid var(--clr-text);
+      border-radius: 3px;
+      padding: 0 1rem;
+    }
+    .pub-box:focus-visible { outline: 2px solid var(--clr-accent); outline-offset: 2px; }
+    .pub-box .pub-item {
+      display: grid;
+      grid-template-columns: 2.75rem 1fr;
+      gap: 0.75rem;
+      padding: 1rem 0;
+    }
+    .pub-box .pub-year {
+      background: none; padding: 0; margin: 0;
+      font-size: 0.78rem; font-weight: 600;
+      color: var(--clr-text-soft);
+      line-height: 1.6;
+    }
+    .pub-box .pub-title { font-size: 0.98rem; margin-bottom: 0.2rem; }
+    .pub-authors strong { color: var(--clr-text); font-weight: 700; }
+    .pub-group-title {
+      position: sticky; top: 0; z-index: 1;
+      background: var(--clr-bg);
+      font-family: var(--font-display);
+      font-size: 0.95rem; font-weight: 600;
+      padding: 0.7rem 0 0.4rem;
+      border-bottom: 2px solid var(--clr-border);
+    }
+    .pub-empty { padding: 1rem 0; color: var(--clr-text-soft); font-size: 0.88rem; }
+
+    /* ── Entry meta line: venue, topic tags, links ── */
+    .pub-meta {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.35rem 0.55rem;
+      margin-top: 0.35rem;
+      font-size: 0.75rem;
+    }
+    .pub-venue { font-weight: 600; color: var(--clr-text); }
+    .pub-tag {
+      font-family: inherit; font-size: 0.7rem; font-weight: 600;
+      padding: 0.05rem 0.4rem;
+      border: none; border-radius: 2px;
+      background: var(--hl); color: #1f1d1a;
+      cursor: pointer;
+    }
+    .pub-tag:hover { text-decoration: underline; }
+    .pub-link { font-weight: 700; color: var(--clr-accent); }
+
     /* ── Responsive ── */
     /* Collapse the two columns into one; profile returns to a centered banner */
     @media (max-width: 820px) {
@@ -457,6 +548,10 @@
       .profile-links { justify-content: center; }
       .cursor-instrument { justify-content: center; }
       .themes { grid-template-columns: 1fr; }
+      .interest { grid-template-columns: 1fr; gap: 0.4rem; }
+      .pub-box { padding: 0 0.75rem; }
+      .pub-box .pub-item { grid-template-columns: 1fr; gap: 0.15rem; }
+      .pub-count { width: 100%; margin-left: 0; }
       .cv-item { grid-template-columns: 1fr; gap: 0.1rem; }
       .profile-photo { width: 12rem; height: 12rem; }
       footer { flex-direction: column; }
@@ -487,6 +582,7 @@
     <a class="nav-name" href="#">Elena Favaro</a>
     <nav>
       <a href="#">Home</a>
+      <a href="#research">Research</a>
       <a href="#publications">Publications</a>
       <a href="#cv">CV</a>
     </nav>
@@ -571,120 +667,30 @@
       I am a Lecturer in Planetary Science at the Open University. My research interests lie at the intersection of geology, geomorphology, and atmospheric sciences. At its core, I seek to answer questions relating to the dynamic interplay of processes and mechanisms responsible for the surficial expression of arid environments on Earth and Mars. I use the expression of landforms (like yardangs and periodic bedrock ridges) and bedforms (like megaripples, dunes, transverse aeolian ridges, dust devils, and wind streaks) in remote areas of Earth and Mars to piece together the complex climatic history that has shaped the landscape, either contemporaneously or at some point in the past. 
       <!-- Expand this with your actual research summary -->
     </p>
-<!--
-    <div class="themes">
-      <div class="theme-card">
-        <h3>Research Theme 1</h3>
-        <p>Brief description of your first main research area or interest.</p>
-      </div>
-      <div class="theme-card">
-        <h3>Research Theme 2</h3>
-        <p>Brief description of your second main research area or interest.</p>
-      </div>
-    </div>
-    -->
   </section>
 
-  <!-- Publications -->
+  <!-- Research interests and publications (built from THEMES and PUBS in the script at the end of the page) -->
+  <section class="section fade-in" id="research">
+    <h2>Research interests</h2>
+    <ul class="interests" id="interests"></ul>
+  </section>
+
   <section class="section fade-in" id="publications">
-    <h2>Selected Publications</h2>
-<p style="color: #8a8578; font-style: italic;">Section under construction</p>
-
-    <ul class="pub-list">
-      <li class="pub-item">
-        <div class="pub-year">2024</div>
-        <div class="pub-title"><a href="https://doi.org/10.1016/j.epsl.2023.118522" target="_blank" rel="noopener noreferrer">Periodic Bedrock Ridges at Oxia Planum and Chryse Planitia,
-Mars: Evidence for widespread aeolian erosion of an ancient surface by regional
-palaeowinds.</a></div>
-        <div class="pub-authors">Favaro, E.A., Balme, M.R., Davis, J.M., Grindrod, P.M., Fawdon, P., McNeil, J.D., &
-Lewis, S.R.</div>
-        <div class="pub-journal">Earth and Planetary Science Letters, 626, 118522. &middot; 2024</div>
-        <button class="pub-summary-toggle" aria-expanded="false" onclick="toggleSummary(this)">
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-          Summary
-        </button>
-        <div class="pub-summary">
-          Periodic Bedrock Ridges (PBRs) are repeating, symmetrical, wind-transverse, bedrock-abraded linear ridges that occur on Mars as parallel sets. Here, we extend our previous survey of PBRs at Oxia Planum – the landing site of ESA's ExoMars Rosalind Franklin rover – to include three additional sites along the margins of the circum-Chryse basin to understand patterns in PBR orientation and occurrence. We analyzed PBR crestline orientation at each study site and found them to be consistent across this large region, but their orientations do not align with global circulation model winds, suggesting contemporary winds are not responsible for PBR development. Furthermore, we used observations of landscape-level stratigraphic relationships at Oxia Planum to constrain the formation age of PBRs to be late Noachian to early Amazonian. Their consistent orientations and age suggest that the Chryse-margin PBRs formed concurrently and represent modification of an ancient palaeosurface. In addition, we find a tendency for PBRs to preferentially occur in regions where Fe/Mg-rich phyllosilicate minerals were detected in hyperspectral remote sensing data. We conclude that regional scale aeolian processes formed the circum-Chryse PBRs, and that exposed bedrock with Fe/Mg-rich phyllosilicate detections were either more susceptible to PBR formation, or better preserve PBRs than other regional lithologies. https://doi.org/10.1016/j.epsl.2023.118522 
-        </div>
-      </li>
-
-      <li class="pub-item">
-        <div class="pub-year">2021</div>
-        <div class="pub-title"><a href="https://doi.org/10.1002/esp.5212" target="_blank" rel="noopener noreferrer">Antecedent controls on
-the spatial organization of yardangs on the Puna Plateau, north‐western Argentina.</a></div>
-        <div class="pub-authors">Favaro, E. A., Hugenholtz, C. H., & Barchyn, T. E. </div>
-        <div class="pub-journal">Earth Surface Processes and Landforms &middot; 2021</div>
-        <button class="pub-summary-toggle" aria-expanded="false" onclick="toggleSummary(this)">
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-          Summary
-        </button>
-        <div class="pub-summary">
-          Yardangs are streamlined ridges that form in arid environments on Earth and Mars through wind-driven abrasion of consolidated substrates. Currently, there is limited consensus on the mechanisms that initiate and establish patterns of yardangs on the landscape. In this work, we examine the spatial organization of yardangs in the Campo de Piedra Pómez ignimbrite deposit of north-western Argentina and identify evidence of antecedent controls on yardang patterns and formation. We mapped 14,826 yardangs in the region using a high-resolution digital elevation model (DEM) and satellite imagery. We classified yardangs as points using a two-stage decision rule based on morphology and spectral characteristics. Point pattern analysis shows that yardangs in the study area are not randomly distributed and commonly exhibit directional anisotropy in point pattern. The anisotropic pattern manifests as bands of closely-spaced yardangs oriented transverse to the dominant northwesterly wind direction. We hypothesize that banding is controlled by pre-existing antecedent topography in the bedrock, such as fumaroles or ridges associated with pyroclastic flow deposits. We present evidence from other locations on Earth and Mars to illustrate that the transverse banding is a common pattern in yardang landscapes.
-        </div>
-      </li>
-
- <li class="pub-item">
-        <div class="pub-year">2021</div>
-        <div class="pub-title"><a href="https://doi.org/10.1029/2020JE006723" target="_blank" rel="noopener noreferrer">The Aeolian Environment of the Landing Site for the ExoMars
-Rosalind Franklin Rover in Oxia Planum, Mars.</a></div>
-        <div class="pub-authors">Favaro, E. A., Balme, M. R., Davis, J. M., Grindrod, P. M., Fawdon, P., Barrett, A. M.,
-& Lewis, S. R.</div>
-        <div class="pub-journal">Journal of Geophysical Research:
-Planets &middot; 2021</div>
-        <button class="pub-summary-toggle" aria-expanded="false" onclick="toggleSummary(this)">
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-          Summary
-        </button>
-        <div class="pub-summary">
-          Aeolian features at Oxia Planum—the 2023 landing site for the ExoMars Rosalind Franklin Rover (ERFR)—are important for Mars exploration because they record information about past and current wind regimes, sand transport vectors, and lend insight to the abrasion, deposition, and transport of granular material. To characterize the wind regime and erosional history of Oxia Planum we used a combination of manual observational and machine-learning techniques to analyze the morphometrics, distribution, and orientation of 10,753 aeolian bedforms (Transverse Aeolian Ridges[TARs]) and landforms (Periodic Bedrock Ridges [PBRs]) around the ERFR landing ellipses. We found that, irrespective of the scale of the TARs, crestline azimuths are consistent across the study area and we infer that the bedform forming winds blew from NW-NNW toward SE-SSE. PBR azimuths show a substantively different orientation to the aeolian bedforms, and we infer that the winds necessary to abrade PBRs had a N-NNE or S-SSE orientation (180° ambiguity). From observations of active dust devils and windstreaks from repeat imagery, we infer a W-WNW or E-ESE (180° ambiguity) wind dominates today. Finally, we compare the inferred wind direction results from the aeolian landscape to modeled wind data from Mars Global Circulation Models. We note that, despite landscape evidence to the contrary, modeled contemporary wind direction lacks the consistent directionality to be responsible for the orientation of aeolian features in Oxia Planum. These results characterize aeolian features ERFR will encounter and suggests multiple wind regimes have influenced the surficial expression of the landing site.
-        </div>
-      </li>
-
- <li class="pub-item">
-        <div class="pub-year">2020</div>
-        <div class="pub-title"><a href="https://doi.org/10.1016/j.icarus.2020.113765" target="_blank" rel="noopener noreferrer">Wind regime,
-sediment transport, and landscape dynamics at a Mars analogue site in the Andes
-Mountains of Northwestern Argentina.</a></div>
-        <div class="pub-authors">Favaro, E. A., Hugenholtz, C. H., Barchyn, T. E., & Gough, T. R.</div>
-        <div class="pub-journal">Icarus &middot; 2020</div>
-        <button class="pub-summary-toggle" aria-expanded="false" onclick="toggleSummary(this)">
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-          Summary
-        </button>
-        <div class="pub-summary">
-          The Puna Plateau of northwestern Argentina is a promising region for analogue investigations of Martian aeolian processes owing to its high altitude, low atmospheric pressure, aridity, geology, and widespread granular and bedrock aeolian landforms. Despite a growing body of research about the region's enigmatic aeolian landforms, little is known about the contemporary aeolian environment, processes, and landscape dynamics. To address this gap, we used a combination of modelled weather data, satellite imagery, and field measurements to characterize the wind regime, aeolian sediment transport, and allied surface changes. The study focused on the Campo de Piedra Pómez (CPP) – a volcanic landscape with a variety of Mars analogue landforms: gravel-mantled megaripples, yardangs, ventifacts, periodic bedrock ridges, and aeolian rat-tails. Modelled weather data from the European Center for Medium-Range Forecasting's ERA-Interim reanalysis dataset confirm the contemporary dominance of northwesterly winds in this region, consistent with the primary orientation of yardangs. These data also indicate the presence of less frequent southeasterly winds, which may explain why re-entrant profiles are observed on the southeast flanks of a small portion of the yardang population, and why some aeolian rat-tails point to the northwest. Observations from multi-temporal satellite imagery indicate that deposition and displacement of small sediment patches overlying ignimbrite bedrock is relatively common across the region. Samples retrieved from sediment traps deployed over one year in the region suggest a broad range of particle densities are mobilized by wind, which implies a wide range of wind speed for fluid entrainment. Conventional aeolian transport models do not consider the effects of particle density variations on transport processes. However, in areas with multiple density sediment present, our results point towards a need for aeolian models to consider density when quantifying and qualifying sediment transport.
-        </div>
-      </li>
-<!--      
-      <li class="pub-item">
-        <div class="pub-year">2024</div>
-        <div class="pub-title"><a href="#">Another paper title goes here.</a></div>
-        <div class="pub-authors">Favaro, E., Co-Author, C., Co-Author, D., et al.</div>
-        <div class="pub-journal">Journal Name &middot; 2024</div>
-        <button class="pub-summary-toggle" aria-expanded="false" onclick="toggleSummary(this)">
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-          Summary
-        </button>
-        <div class="pub-summary">
-          Add a brief 2–3 sentence summary of this paper's key findings and significance.
-        </div>
-      </li>
-
-      <li class="pub-item">
-        <div class="pub-year">2023</div>
-        <div class="pub-title"><a href="#">A third paper title goes here.</a></div>
-        <div class="pub-authors">Favaro, E., Co-Author, E., et al.</div>
-        <div class="pub-journal">Journal Name &middot; 2023</div>
-        <button class="pub-summary-toggle" aria-expanded="false" onclick="toggleSummary(this)">
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-          Summary
-        </button>
-        <div class="pub-summary">
-          Add a brief 2–3 sentence summary of this paper's key findings and significance.
-        </div>
-      </li>
--->      
-    </ul>
+    <h2>Publications</h2>
+    <div class="pub-toolbar">
+      <div class="seg" role="group" aria-label="Filter by authorship">
+        <button type="button" data-who="all" aria-pressed="true">All</button>
+        <button type="button" data-who="first" aria-pressed="false">First author</button>
+        <button type="button" data-who="co" aria-pressed="false">Co-author</button>
+      </div>
+      <div class="seg" role="group" aria-label="Order publications">
+        <button type="button" data-view="date" aria-pressed="true">By date</button>
+        <button type="button" data-view="topic" aria-pressed="false">By topic</button>
+      </div>
+      <span class="pub-count" id="pub-count"></span>
+    </div>
+    <div class="pub-box" id="pub-list" tabindex="0" aria-label="Publication list"></div>
+    <noscript><p>Enable JavaScript to view the publication list, or see the <a href="https://scholar.google.com/citations?user=4CNGDTEAAAAJ&hl=en">Google Scholar profile</a>.</p></noscript>
   </section>
 
   <!-- CV -->
@@ -740,6 +746,7 @@ Mountains of Northwestern Argentina.</a></div>
   <div class="footer-links">
     <h4>Pages</h4>
     <a href="#">Home</a>
+    <a href="#research">Research</a>
     <a href="#publications">Publications</a>
     <a href="#cv">CV</a>
   </div>
@@ -786,6 +793,289 @@ Mountains of Northwestern Argentina.</a></div>
         if (hit) { hit.checked = true; apply(saved); }
       }
     } catch (e) {}
+  })();
+</script>
+
+<!-- ── Research cards and publication list ── -->
+<script>
+  /* Your surname as it appears in author lists. Used to bold your name and to sort first-author papers. */
+  const ME = "Favaro";
+
+  /* Research themes, shown as highlighter labels and used as topic tags.
+     "id" links papers to themes (short, no spaces); "color" is the label colour. */
+  const THEMES = [
+    { id: "aeolian",   color: "#f4d35e", title: "Aeolian Geomorphology and Geology",
+      text: "Formation, evolution, morphology, and distribution of aeolian landforms on Earth and Mars, including wind-eroded bedrock features such as yardangs and periodic bedrock ridges, as well as depositional bedforms including transverse aeolian ridges, megaripples, and dunes. Their spatial patterns and orientations are used to investigate sediment transport, surface–atmosphere interactions, and past and present wind regimes." },
+    { id: "winds",     color: "#9bb7e8", title: "Ancient and Contemporary Wind Regimes",
+      text: "Reconstruction of palaeowind directions from aeolian features and comparison with modern indicators of atmospheric activity, including dust devils and wind streaks, as well as predictions from Mars global- and mesoscale circulation models." },
+    { id: "exomars",   color: "#e8a0a0", title: "ExoMars Rosalind Franklin Rover",
+      text: "Geological, geomorphological, aeolian, and surface-atmosphere characterisation of Oxia Planum, with particular emphasis on the surface environment and geological context of ESA’s Rosalind Franklin rover landing site." },
+    { id: "analogues", color: "#a8cf9a", title: "Terrestrial Analogues",
+      text: "Field-based and remote-sensing investigations of terrestrial analogues, examining wind regimes, sediment transport, bedrock erosion, mineralogy, and testing ExoMars instrument ground models in Argentina, Canada, Iceland, and Scotland." },
+    { id: "ml",        color: "#a9d6df", title: "Machine Learning Applications for Mars",
+      text: "Application of deep-learning approaches to planetary surface mapping, including terrain classification and automated detection and characterisation of surface features." },
+    { id: "arctic",    color: "#c7b3e5", title: "Arctic Fluvial Hydrology and Permafrost Dynamics",
+      text: "Investigation of runoff, suspended sediment transport, landscape response, and permafrost disturbance in High Arctic catchments at Cape Bounty, Melville Island, Nunavut." }
+  ];
+
+  /* Publications. Fields:
+       year, title, authors (array, in order), journal, doi ("" if none),
+       ads and arxiv (optional full URLs; leave "" if none),
+       topics (theme ids from THEMES), summary (optional; "" hides the toggle)
+     Papers in the same year appear in the order listed here. */
+  const PUBS = [
+    {
+      year: 2026,
+      title: "Active Dust Devils in the Rosalind Franklin Rover Landing Site in Oxia Planum, Mars",
+      authors: ["Grindrod, P. M.", "Favaro, E. A.", "Balme, M. R.", "Patel, M. R."],
+      journal: "Journal of Geophysical Research: Planets, 131(10)",
+      doi: "10.1029/2026JE010056", ads: "", arxiv: "",
+      topics: ["winds", "exomars"],
+      summary: ""
+    },
+    {
+      year: 2026,
+      title: "Detecting and measuring Transverse Aeolian Ridges on Mars using deep learning",
+      authors: ["Barrett, A. M.", "Balme, M. R.", "Favaro, E. A.", "Woods, M. J.", "Malinowski, M.", "Elsarky, L.", "Rajendran, K.", "Holmes, J. A.", "Patel, M. R."],
+      journal: "Icarus, 449, 116947",
+      doi: "10.1016/j.icarus.2026.116947", ads: "", arxiv: "",
+      topics: ["aeolian", "ml"],
+      summary: ""
+    },
+    {
+      year: 2024,
+      title: "Periodic Bedrock Ridges at Oxia Planum and Chryse Planitia, Mars: Evidence for widespread aeolian erosion of an ancient surface by regional palaeowinds",
+      authors: ["Favaro, E. A.", "Balme, M. R.", "McNeil, J. D.", "Fawdon, P.", "Davis, J. M.", "Grindrod, P. M.", "Lewis, S. R."],
+      journal: "Earth and Planetary Science Letters, 626, 118522",
+      doi: "10.1016/j.epsl.2023.118522", ads: "", arxiv: "",
+      topics: ["aeolian", "winds", "exomars"],
+      summary: "Periodic Bedrock Ridges (PBRs) are repeating, symmetrical, wind-transverse, bedrock-abraded linear ridges that occur on Mars as parallel sets. Here, we extend our previous survey of PBRs at Oxia Planum, the landing site of ESA's ExoMars Rosalind Franklin rover, to include three additional sites along the margins of the circum-Chryse basin to understand patterns in PBR orientation and occurrence. We analyzed PBR crestline orientation at each study site and found them to be consistent across this large region, but their orientations do not align with global circulation model winds, suggesting contemporary winds are not responsible for PBR development. Furthermore, we used observations of landscape-level stratigraphic relationships at Oxia Planum to constrain the formation age of PBRs to be late Noachian to early Amazonian. Their consistent orientations and age suggest that the Chryse-margin PBRs formed concurrently and represent modification of an ancient palaeosurface. In addition, we find a tendency for PBRs to preferentially occur in regions where Fe/Mg-rich phyllosilicate minerals were detected in hyperspectral remote sensing data. We conclude that regional scale aeolian processes formed the circum-Chryse PBRs, and that exposed bedrock with Fe/Mg-rich phyllosilicate detections were either more susceptible to PBR formation, or better preserve PBRs than other regional lithologies."
+    },
+    {
+      year: 2023,
+      title: "Mawrth Vallis, Mars, classified using the NOAH-H deep-learning terrain classification system",
+      authors: ["Barrett, A. M.", "Fawdon, P.", "Favaro, E. A.", "Balme, M. R.", "Wright, J.", "Woods, M. J.", "Karachalios, S.", "Bohacek, E.", "Gerdes, L.", "Sefton-Nash, E.", "Joudrier, L."],
+      journal: "Journal of Maps, 19(1)",
+      doi: "10.1080/17445647.2023.2285480", ads: "", arxiv: "",
+      topics: ["ml"],
+      summary: ""
+    },
+    {
+      year: 2023,
+      title: "Ancient alluvial plains at Oxia Planum, Mars",
+      authors: ["Davis, J. M.", "Balme, M. R.", "Fawdon, P.", "Grindrod, P. M.", "Favaro, E. A.", "Banham, S. G.", "Thomas, N."],
+      journal: "Earth and Planetary Science Letters, 601, 117904",
+      doi: "10.1016/j.epsl.2022.117904", ads: "", arxiv: "",
+      topics: ["exomars"],
+      summary: ""
+    },
+    {
+      year: 2022,
+      title: "Oxia Planum, Mars, classified using the NOAH-H deep-learning terrain classification system",
+      authors: ["Barrett, A. M.", "Wright, J.", "Favaro, E. A.", "Fawdon, P.", "Balme, M. R.", "Woods, M. J.", "Karachalios, S.", "Bohacek, E.", "Sefton-Nash, E.", "Joudrier, L."],
+      journal: "Journal of Maps, 19(1)",
+      doi: "10.1080/17445647.2022.2112777", ads: "", arxiv: "",
+      topics: ["ml", "exomars"],
+      summary: ""
+    },
+    {
+      year: 2022,
+      title: "Jezero crater, Mars: application of the deep learning NOAH-H terrain classification system",
+      authors: ["Wright, J.", "Barrett, A. M.", "Fawdon, P.", "Favaro, E. A.", "Balme, M. R.", "Woods, M. J.", "Karachalios, S."],
+      journal: "Journal of Maps, 18(2), 484–496",
+      doi: "10.1080/17445647.2022.2095935", ads: "", arxiv: "",
+      topics: ["ml"],
+      summary: ""
+    },
+    {
+      year: 2021,
+      title: "Antecedent controls on the spatial organization of yardangs on the Puna Plateau, north-western Argentina",
+      authors: ["Favaro, E. A.", "Hugenholtz, C. H.", "Barchyn, T. E."],
+      journal: "Earth Surface Processes and Landforms",
+      doi: "10.1002/esp.5212", ads: "", arxiv: "",
+      topics: ["aeolian", "analogues"],
+      summary: "Yardangs are streamlined ridges that form in arid environments on Earth and Mars through wind-driven abrasion of consolidated substrates. Currently, there is limited consensus on the mechanisms that initiate and establish patterns of yardangs on the landscape. In this work, we examine the spatial organization of yardangs in the Campo de Piedra Pómez ignimbrite deposit of north-western Argentina and identify evidence of antecedent controls on yardang patterns and formation. We mapped 14,826 yardangs in the region using a high-resolution digital elevation model (DEM) and satellite imagery. We classified yardangs as points using a two-stage decision rule based on morphology and spectral characteristics. Point pattern analysis shows that yardangs in the study area are not randomly distributed and commonly exhibit directional anisotropy in point pattern. The anisotropic pattern manifests as bands of closely-spaced yardangs oriented transverse to the dominant northwesterly wind direction. We hypothesize that banding is controlled by pre-existing antecedent topography in the bedrock, such as fumaroles or ridges associated with pyroclastic flow deposits. We present evidence from other locations on Earth and Mars to illustrate that the transverse banding is a common pattern in yardang landscapes."
+    },
+    {
+      year: 2021,
+      title: "The Aeolian Environment of the Landing Site for the ExoMars Rosalind Franklin Rover in Oxia Planum, Mars",
+      authors: ["Favaro, E. A.", "Balme, M. R.", "Davis, J. M.", "Grindrod, P. M.", "Fawdon, P.", "Barrett, A. M.", "Lewis, S. R."],
+      journal: "Journal of Geophysical Research: Planets, 126(4)",
+      doi: "10.1029/2020JE006723", ads: "", arxiv: "",
+      topics: ["aeolian", "winds", "exomars", "ml"],
+      summary: "Aeolian features at Oxia Planum, the 2023 landing site for the ExoMars Rosalind Franklin Rover (ERFR), are important for Mars exploration because they record information about past and current wind regimes, sand transport vectors, and lend insight to the abrasion, deposition, and transport of granular material. To characterize the wind regime and erosional history of Oxia Planum we used a combination of manual observational and machine-learning techniques to analyze the morphometrics, distribution, and orientation of 10,753 aeolian bedforms (Transverse Aeolian Ridges [TARs]) and landforms (Periodic Bedrock Ridges [PBRs]) around the ERFR landing ellipses. We found that, irrespective of the scale of the TARs, crestline azimuths are consistent across the study area and we infer that the bedform forming winds blew from NW-NNW toward SE-SSE. PBR azimuths show a substantively different orientation to the aeolian bedforms, and we infer that the winds necessary to abrade PBRs had a N-NNE or S-SSE orientation (180° ambiguity). From observations of active dust devils and windstreaks from repeat imagery, we infer a W-WNW or E-ESE (180° ambiguity) wind dominates today. Finally, we compare the inferred wind direction results from the aeolian landscape to modeled wind data from Mars Global Circulation Models. We note that, despite landscape evidence to the contrary, modeled contemporary wind direction lacks the consistent directionality to be responsible for the orientation of aeolian features in Oxia Planum. These results characterize aeolian features ERFR will encounter and suggests multiple wind regimes have influenced the surficial expression of the landing site."
+    },
+    {
+      year: 2020,
+      title: "Wind regime, sediment transport, and landscape dynamics at a Mars analogue site in the Andes Mountains of Northwestern Argentina",
+      authors: ["Favaro, E. A.", "Hugenholtz, C. H.", "Barchyn, T. E.", "Gough, T. R."],
+      journal: "Icarus, 346, 113765",
+      doi: "10.1016/j.icarus.2020.113765", ads: "", arxiv: "",
+      topics: ["analogues", "winds"],
+      summary: "The Puna Plateau of northwestern Argentina is a promising region for analogue investigations of Martian aeolian processes owing to its high altitude, low atmospheric pressure, aridity, geology, and widespread granular and bedrock aeolian landforms. Despite a growing body of research about the region's enigmatic aeolian landforms, little is known about the contemporary aeolian environment, processes, and landscape dynamics. To address this gap, we used a combination of modelled weather data, satellite imagery, and field measurements to characterize the wind regime, aeolian sediment transport, and allied surface changes. The study focused on the Campo de Piedra Pómez (CPP), a volcanic landscape with a variety of Mars analogue landforms: gravel-mantled megaripples, yardangs, ventifacts, periodic bedrock ridges, and aeolian rat-tails. Modelled weather data from the European Center for Medium-Range Forecasting's ERA-Interim reanalysis dataset confirm the contemporary dominance of northwesterly winds in this region, consistent with the primary orientation of yardangs. These data also indicate the presence of less frequent southeasterly winds, which may explain why re-entrant profiles are observed on the southeast flanks of a small portion of the yardang population, and why some aeolian rat-tails point to the northwest. Observations from multi-temporal satellite imagery indicate that deposition and displacement of small sediment patches overlying ignimbrite bedrock is relatively common across the region. Samples retrieved from sediment traps deployed over one year in the region suggest a broad range of particle densities are mobilized by wind, which implies a wide range of wind speed for fluid entrainment. Conventional aeolian transport models do not consider the effects of particle density variations on transport processes. However, in areas with multiple density sediment present, our results point towards a need for aeolian models to consider density when quantifying and qualifying sediment transport."
+    },
+    {
+      year: 2017,
+      title: "Evolution and diagnostic utility of aeolian rat-tails: A new type of abrasion feature on Earth and Mars",
+      authors: ["Favaro, E. A.", "Hugenholtz, C. H.", "Barchyn, T. E."],
+      journal: "Aeolian Research, 28, 91–98",
+      doi: "10.1016/j.aeolia.2017.08.004", ads: "", arxiv: "",
+      topics: ["aeolian", "analogues"],
+      summary: ""
+    },
+    {
+      year: 2017,
+      title: "Over-Winter Channel Bed Temperature Regimes Generated by Contrasting Snow Accumulation in a High Arctic River",
+      authors: ["Bonnaventure, P. P.", "Lamoureux, S. F.", "Favaro, E. A."],
+      journal: "Permafrost and Periglacial Processes, 28(1), 339–346",
+      doi: "10.1002/ppp.1902", ads: "", arxiv: "",
+      topics: ["arctic"],
+      summary: ""
+    },
+    {
+      year: 2015,
+      title: "Formation of periodic bedrock ridges on Earth",
+      authors: ["Hugenholtz, C. H.", "Barchyn, T. E.", "Favaro, E. A."],
+      journal: "Aeolian Research, 18, 135–144",
+      doi: "10.1016/j.aeolia.2015.07.002", ads: "", arxiv: "",
+      topics: ["aeolian", "analogues"],
+      summary: ""
+    },
+    {
+      year: 2015,
+      title: "Downstream patterns of suspended sediment transport in a High Arctic river influenced by permafrost disturbance and recent climate change",
+      authors: ["Favaro, E. A.", "Lamoureux, S. F."],
+      journal: "Geomorphology, 246, 359–369",
+      doi: "10.1016/j.geomorph.2015.06.038", ads: "", arxiv: "",
+      topics: ["arctic"],
+      summary: ""
+    },
+    {
+      year: 2014,
+      title: "Antecedent controls on rainfall runoff response and sediment transport in a high arctic catchment",
+      authors: ["Favaro, E. A.", "Lamoureux, S. F."],
+      journal: "Geografiska Annaler: Series A, Physical Geography, 96(4), 433–446",
+      doi: "10.1111/geoa.12063", ads: "", arxiv: "",
+      topics: ["arctic"],
+      summary: ""
+    },
+    {
+      year: 2014,
+      title: "Erosion dynamics following localized permafrost slope disturbances",
+      authors: ["Lamoureux, S. F.", "Lafrenière, M. J.", "Favaro, E. A."],
+      journal: "Geophysical Research Letters, 41(15), 5499–5505",
+      doi: "10.1002/2014GL060677", ads: "", arxiv: "",
+      topics: ["arctic"],
+      summary: ""
+    }
+  ];
+
+  (function () {
+    const ext = 'target="_blank" rel="noopener noreferrer"';
+    const theme = id => THEMES.find(t => t.id === id) || { id: id, title: id, color: "#ddd" };
+    const isFirst = p => p.authors.length > 0 && p.authors[0].includes(ME);
+    let view = "date";   // "date" or "topic"
+    let who  = "all";    // "all", "first" or "co"
+
+    /* Author line: your name in bold; long lists shortened to
+       first three, then you, then "et al." with the total count. */
+    function authorLine(list) {
+      const fmt = a => a.includes(ME) ? "<strong>" + a + "</strong>" : a;
+      const n = list.length;
+      if (n <= 8) return list.map(fmt).join("; ") + (n > 3 ? " (" + n + " authors)" : "");
+      const mine = list.findIndex(a => a.includes(ME));
+      let s = list.slice(0, 3).map(fmt).join("; ");
+      if (mine >= 3) s += "; … " + fmt(list[mine]);
+      return s + " et al. (" + n + " authors)";
+    }
+
+    function pubItem(p) {
+      const tags = p.topics.map(id => {
+        const t = theme(id);
+        return '<button class="pub-tag" type="button" style="--hl:' + t.color + '" data-topic="' + t.id + '">' + t.title + '</button>';
+      }).join("");
+      const links = [
+        p.ads   ? '<a class="pub-link" href="' + p.ads + '" ' + ext + '>ADS</a>' : "",
+        p.arxiv ? '<a class="pub-link" href="' + p.arxiv + '" ' + ext + '>arXiv</a>' : "",
+        p.doi   ? '<a class="pub-link" href="https://doi.org/' + p.doi + '" ' + ext + '>DOI</a>' : ""
+      ].join("");
+      const title = p.doi ? '<a href="https://doi.org/' + p.doi + '" ' + ext + '>' + p.title + '</a>' : p.title;
+      const summary = p.summary
+        ? '<button class="pub-summary-toggle" aria-expanded="false" onclick="toggleSummary(this)">' +
+          '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>Summary</button>' +
+          '<div class="pub-summary">' + p.summary + '</div>'
+        : "";
+      return '<li class="pub-item">' +
+        '<div class="pub-year">' + p.year + '</div>' +
+        '<div>' +
+          '<div class="pub-title">' + title + '</div>' +
+          '<div class="pub-authors">' + authorLine(p.authors) + '</div>' +
+          '<div class="pub-meta"><span class="pub-venue">' + p.journal + '</span>' + tags + links + '</div>' +
+          summary +
+        '</div></li>';
+    }
+
+    const listEl  = document.getElementById("pub-list");
+    const countEl = document.getElementById("pub-count");
+    const viewBtns = document.querySelectorAll(".seg [data-view]");
+    const whoBtns  = document.querySelectorAll(".seg [data-who]");
+
+    function render() {
+      viewBtns.forEach(b => b.setAttribute("aria-pressed", b.dataset.view === view));
+      whoBtns.forEach(b => b.setAttribute("aria-pressed", b.dataset.who === who));
+      const shown = PUBS
+        .filter(p => who === "all" || (who === "first" ? isFirst(p) : !isFirst(p)))
+        .sort((a, b) => b.year - a.year);
+      countEl.textContent = shown.length + (shown.length === 1 ? " paper" : " papers");
+      if (!shown.length) { listEl.innerHTML = '<p class="pub-empty">No papers in this view.</p>'; return; }
+      if (view === "date") {
+        listEl.innerHTML = '<ul class="pub-list">' + shown.map(pubItem).join("") + '</ul>';
+        return;
+      }
+      let html = "";
+      THEMES.forEach(t => {
+        const group = shown.filter(p => p.topics.includes(t.id));
+        if (!group.length) return;
+        html += '<h3 class="pub-group-title" id="topic-' + t.id + '">' + t.title + '</h3>' +
+                '<ul class="pub-list">' + group.map(pubItem).join("") + '</ul>';
+      });
+      const other = shown.filter(p => !p.topics.length);
+      if (other.length) html += '<h3 class="pub-group-title" id="topic-other">Other</h3>' +
+                                '<ul class="pub-list">' + other.map(pubItem).join("") + '</ul>';
+      listEl.innerHTML = html;
+    }
+
+    /* Switch to topic view and scroll the box to that topic */
+    function showTopic(id) {
+      view = "topic";
+      render();
+      document.getElementById("publications").scrollIntoView({ behavior: "smooth" });
+      const h = document.getElementById("topic-" + id);
+      listEl.scrollTop = h ? h.offsetTop : 0;
+    }
+
+    /* Research interests */
+    const interestsEl = document.getElementById("interests");
+    interestsEl.innerHTML = THEMES.map(t => {
+      const n = PUBS.filter(p => p.topics.includes(t.id)).length;
+      return '<li class="interest">' +
+        '<button class="hl" type="button" style="--hl:' + t.color + '" data-topic="' + t.id + '" title="Show ' + n + (n === 1 ? ' paper' : ' papers') + '">' + t.title + '</button>' +
+        '<p>' + t.text + '</p></li>';
+    }).join("");
+    interestsEl.addEventListener("click", e => {
+      const b = e.target.closest(".hl");
+      if (b) showTopic(b.dataset.topic);
+    });
+
+    /* Toolbar and tag clicks */
+    viewBtns.forEach(b => b.addEventListener("click", () => { view = b.dataset.view; render(); listEl.scrollTop = 0; }));
+    whoBtns.forEach(b => b.addEventListener("click", () => { who = b.dataset.who; render(); listEl.scrollTop = 0; }));
+    listEl.addEventListener("click", e => {
+      const tag = e.target.closest(".pub-tag");
+      if (tag) showTopic(tag.dataset.topic);
+    });
+
+    render();
   })();
 </script>
 
